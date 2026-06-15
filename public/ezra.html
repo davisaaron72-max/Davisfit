@@ -1697,77 +1697,10 @@
   }
 </script>
 
-
-
-<script>
-  const SUPABASE_URL = 'https://thfkvablbyrqdndoaiqo.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_oliFMYDCKU98JHD7CxqFxg_YtjNqG03';
-  const { createClient } = supabase;
-  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  let selectedWho = null;
-
-  function toggleLog(id) {
-    const el = document.getElementById('log-' + id);
-    if (el) el.classList.toggle('open');
-  }
-
-  function toggleCheck(el) {
-    el.classList.toggle('done');
-  }
-
-  function selectWho(name) {
-    selectedWho = name;
-    document.getElementById('btn-ezra').className = 'who-btn' + (name === 'Ezra' ? ' ezra-active' : '');
-    document.getElementById('btn-abram').className = 'who-btn' + (name === 'Abram' ? ' abram-active' : '');
-  }
-
-  async function submitAll() {
-    if (!selectedWho) { alert('Select who is logging first.'); return; }
-    const btn = document.getElementById('submitAllBtn');
-    btn.disabled = true;
-    btn.textContent = 'Saving...';
-
-    const today = new Date().toISOString().split('T')[0];
-    const logs = [];
-
-    document.querySelectorAll('.inline-log.open').forEach(logDiv => {
-      const exId = logDiv.id.replace('log-', '');
-      const exName = logDiv.previousElementSibling?.querySelector('.exercise-name')?.childNodes[0]?.textContent?.trim() || exId;
-      logDiv.querySelectorAll('.log-set-row').forEach((row, i) => {
-        const setNum = i + 1;
-        const weight = parseFloat(document.getElementById(exId + '-w' + setNum)?.value) || 0;
-        const reps = parseInt(document.getElementById(exId + '-r' + setNum)?.value) || 0;
-        if (reps > 0 || weight > 0) {
-          logs.push({ member: selectedWho, exercise: exName, sets: setNum, reps, weight, logged_date: today });
-        }
-      });
-    });
-
-    if (logs.length === 0) { alert('Open at least one exercise log and enter some data.'); btn.disabled = false; btn.textContent = 'Submit Workout'; return; }
-
-    const { error } = await db.from('workout_logs').insert(logs);
-    if (error) { alert('Error: ' + error.message); btn.disabled = false; btn.textContent = 'Submit Workout'; return; }
-
-    document.getElementById('workoutToast').classList.add('show');
-    setTimeout(() => document.getElementById('workoutToast').classList.remove('show'), 3000);
-    btn.disabled = false;
-    btn.textContent = 'Submit Workout';
-
-    // Close all log panels and clear inputs
-    document.querySelectorAll('.inline-log').forEach(l => l.classList.remove('open'));
-    document.querySelectorAll('.log-set-input').forEach(i => i.value = '');
-    document.querySelectorAll('.log-set-check').forEach(c => c.classList.remove('done'));
-  }
-</script>
-
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  const SUPABASE_URL = 'https://thfkvablbyrqdndoaiqo.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_oliFMYDCKU98JHD7CxqFxg_YtjNqG03';
   const { createClient } = supabase;
-  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+  const db = createClient('https://thfkvablbyrqdndoaiqo.supabase.co', 'sb_publishable_oliFMYDCKU98JHD7CxqFxg_YtjNqG03');
   const MEMBER = 'Ezra';
 
   function toggleLog(id) {
@@ -1834,3 +1767,4 @@
   }
 </script>
 </body>
+</html>
