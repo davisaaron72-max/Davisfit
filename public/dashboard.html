@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dad Dashboard — DavisFit</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap');
+
+  :root {
+    --black: #0a0a0a;
+    --surface: #141414;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --gold: #c9a84c;
+    --off-white: #f0ede6;
+    --mid: #888;
+    --ezra: #d4a017;
+    --abram: #c0392b;
+    --noah: #e8a0b0;
+    --uriah: #e07b39;
+    --amy: #9b59b6;
+    --aaron: #2980b9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--black); color: var(--off-white); font-family: 'Barlow', sans-serif; min-height: 100vh; }
+
+  .back-nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0.75rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+  .back-nav a { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); text-decoration: none; }
+  .back-nav span { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); }
+
+  header { padding: 2rem 1.5rem 1.5rem; border-bottom: 2px solid var(--gold); max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-end; }
+  header h1 { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em; }
+  header h1 span { color: var(--gold); }
+  .date-filter { display: flex; gap: 0.5rem; }
+  .filter-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.4rem 0.85rem; color: var(--mid); font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.15s; }
+  .filter-btn:hover, .filter-btn.active { border-color: var(--gold); color: var(--gold); }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  .section-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--mid); margin-bottom: 1.25rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+
+  /* MEMBER FILTER */
+  .member-filter { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+  .mf-btn { background: var(--surface); border: 2px solid var(--border); border-radius: 4px; padding: 0.4rem 1rem; font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.15s; color: var(--mid); }
+  .mf-btn.active { color: var(--member-color); border-color: var(--member-color); }
+
+  /* SUMMARY CARDS */
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2.5rem; }
+  .summary-card { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid var(--member-color); border-radius: 4px; padding: 1.1rem 1.25rem; }
+  .summary-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--member-color); margin-bottom: 0.5rem; }
+  .summary-stat { font-size: 0.82rem; color: var(--mid); margin-bottom: 0.2rem; }
+  .summary-stat strong { color: var(--off-white); }
+  .summary-last { font-size: 0.75rem; color: #555; margin-top: 0.4rem; font-style: italic; }
+
+  /* LOG TABLE */
+  .log-table { width: 100%; border-collapse: collapse; }
+  .log-table th { font-family: 'Barlow Condensed', sans-serif; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--mid); padding: 0.6rem 1rem; text-align: left; border-bottom: 1px solid var(--border); background: var(--surface); }
+  .log-table td { padding: 0.75rem 1rem; border-bottom: 1px solid #1a1a1a; font-size: 0.88rem; color: #ccc; }
+  .log-table tr:hover td { background: var(--surface); }
+  .member-tag { display: inline-block; font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.15rem 0.5rem; border-radius: 2px; }
+  .pr-badge { background: var(--gold); color: var(--black); font-family: 'Barlow Condensed', sans-serif; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.1rem 0.4rem; border-radius: 2px; margin-left: 0.4rem; }
+
+  .empty-state { text-align: center; padding: 4rem 2rem; color: var(--mid); }
+  .empty-state h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; color: #444; }
+
+  .loading { text-align: center; padding: 3rem; color: var(--mid); font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.85rem; }
+
+  @media (max-width: 600px) {
+    header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .log-table th:nth-child(5), .log-table td:nth-child(5) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="back-nav">
+  <a href="index.html">← Back to DavisFit</a>
+  <span id="lastRefresh"></span>
+</div>
+
+<header>
+  <div>
+    <h1>Dad <span>Dashboard</span></h1>
+    <p style="color:var(--mid); font-size:0.82rem; margin-top:0.3rem;">All workout logs across the family</p>
+  </div>
+  <div class="date-filter">
+    <button class="filter-btn active" onclick="setRange(7, this)">7 Days</button>
+    <button class="filter-btn" onclick="setRange(30, this)">30 Days</button>
+    <button class="filter-btn" onclick="setRange(90, this)">All Time</button>
+  </div>
+</header>
+
+<main>
+
+  <div class="section-label">Filter by Member</div>
+  <div class="member-filter">
+    <button class="mf-btn active" style="--member-color:var(--gold)" onclick="filterMember('all', this)">All</button>
+    <button class="mf-btn" style="--member-color:var(--ezra)" onclick="filterMember('Ezra', this)">Ezra</button>
+    <button class="mf-btn" style="--member-color:var(--abram)" onclick="filterMember('Abram', this)">Abram</button>
+    <button class="mf-btn" style="--member-color:var(--noah)" onclick="filterMember('Noah', this)">Noah</button>
+    <button class="mf-btn" style="--member-color:var(--uriah)" onclick="filterMember('Uriah', this)">Uriah</button>
+    <button class="mf-btn" style="--member-color:var(--amy)" onclick="filterMember('Amy', this)">Amy</button>
+  </div>
+
+  <div class="section-label">Member Summary</div>
+  <div class="summary-grid" id="summaryGrid">
+    <div class="loading">Loading...</div>
+  </div>
+
+  <div class="section-label">Recent Logs</div>
+  <div id="logsContainer">
+    <div class="loading">Loading...</div>
+  </div>
+
+</main>
+
+<script>
+  const SUPABASE_URL = 'https://thfkvablbyrqdndoaiqo.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_oliFMYDCKU98JHD7CxqFxg_YtjNqG03';
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const memberColors = { Ezra: '#d4a017', Abram: '#c0392b', Noah: '#e8a0b0', Uriah: '#e07b39', Amy: '#9b59b6', Aaron: '#2980b9' };
+  let allLogs = [];
+  let currentRange = 7;
+  let currentMember = 'all';
+
+  async function loadData() {
+    const since = new Date();
+    since.setDate(since.getDate() - (currentRange === 90 ? 3650 : currentRange));
+    const sinceStr = since.toISOString().split('T')[0];
+
+    let query = db.from('workout_logs').select('*').gte('logged_date', sinceStr).order('logged_date', { ascending: false }).order('created_at', { ascending: false });
+    if (currentMember !== 'all') query = query.eq('member', currentMember);
+
+    const { data, error } = await query.limit(200);
+    if (error) { document.getElementById('logsContainer').innerHTML = `<div class="empty-state"><h3>Error loading data</h3><p>${error.message}</p></div>`; return; }
+
+    allLogs = data || [];
+    renderSummary();
+    renderLogs();
+    document.getElementById('lastRefresh').textContent = 'Updated ' + new Date().toLocaleTimeString();
+  }
+
+  function renderSummary() {
+    const members = ['Ezra', 'Abram', 'Noah', 'Uriah', 'Amy'];
+    const grid = document.getElementById('summaryGrid');
+    const filtered = currentMember === 'all' ? members : [currentMember];
+
+    grid.innerHTML = filtered.map(m => {
+      const mLogs = allLogs.filter(l => l.member === m);
+      const sessions = [...new Set(mLogs.map(l => l.logged_date))].length;
+      const totalSets = mLogs.length;
+      const lastDate = mLogs[0]?.logged_date || null;
+      const color = memberColors[m] || '#888';
+      return `
+        <div class="summary-card" style="--member-color:${color}">
+          <div class="summary-name">${m}</div>
+          <div class="summary-stat">Sessions: <strong>${sessions}</strong></div>
+          <div class="summary-stat">Total Sets: <strong>${totalSets}</strong></div>
+          ${lastDate ? `<div class="summary-last">Last: ${lastDate}</div>` : '<div class="summary-last">No logs yet</div>'}
+        </div>`;
+    }).join('');
+  }
+
+  function renderLogs() {
+    const container = document.getElementById('logsContainer');
+    if (allLogs.length === 0) {
+      container.innerHTML = `<div class="empty-state"><h3>No workouts logged yet</h3><p>Have the boys log their first session.</p></div>`;
+      return;
+    }
+
+    // Group by member + exercise to find PRs
+    const prMap = {};
+    allLogs.forEach(l => {
+      const key = `${l.member}-${l.exercise}`;
+      if (!prMap[key] || l.weight > prMap[key]) prMap[key] = l.weight;
+    });
+
+    container.innerHTML = `<table class="log-table">
+      <thead><tr>
+        <th>Date</th><th>Member</th><th>Exercise</th><th>Reps</th><th>Weight</th><th>Notes</th>
+      </tr></thead>
+      <tbody>${allLogs.map(l => {
+        const color = memberColors[l.member] || '#888';
+        const key = `${l.member}-${l.exercise}`;
+        const isPR = l.weight > 0 && l.weight >= prMap[key];
+        return `<tr>
+          <td>${l.logged_date}</td>
+          <td><span class="member-tag" style="color:${color}; background:${color}22">${l.member}</span></td>
+          <td>${l.exercise}${isPR ? '<span class="pr-badge">PR</span>' : ''}</td>
+          <td>${l.reps}</td>
+          <td>${l.weight > 0 ? l.weight + ' lbs' : '—'}</td>
+          <td style="color:var(--mid); font-size:0.8rem">${l.notes || '—'}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>`;
+  }
+
+  function setRange(days, btn) {
+    currentRange = days;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    loadData();
+  }
+
+  function filterMember(member, btn) {
+    currentMember = member;
+    document.querySelectorAll('.mf-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    loadData();
+  }
+
+  // Auto refresh every 60 seconds
+  loadData();
+  setInterval(loadData, 60000);
+</script>
+</body>
+</html>
