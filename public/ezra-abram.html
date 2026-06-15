@@ -307,6 +307,150 @@
     header h1 { font-size: 2rem; }
     .section { padding: 1.5rem 1rem; }
   }
+
+  /* INLINE LOGGING */
+  .log-toggle {
+    background: none;
+    border: 1px solid #333;
+    border-radius: 3px;
+    color: var(--gold);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.5rem;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    transition: all 0.15s;
+  }
+  .log-toggle:hover { background: #1a1600; border-color: var(--gold); }
+  .inline-log {
+    display: none;
+    background: #111;
+    border-top: 1px solid #222;
+    padding: 0.75rem 1rem;
+  }
+  .inline-log.open { display: block; }
+  .log-set-row {
+    display: grid;
+    grid-template-columns: 30px 1fr 1fr auto;
+    gap: 0.4rem;
+    align-items: center;
+    margin-bottom: 0.4rem;
+  }
+  .log-set-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    color: var(--gold);
+    font-size: 0.8rem;
+    text-align: center;
+  }
+  .log-set-input {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 3px;
+    padding: 0.4rem 0.5rem;
+    color: var(--off-white);
+    font-size: 0.85rem;
+    text-align: center;
+    width: 100%;
+    outline: none;
+  }
+  .log-set-input:focus { border-color: var(--gold); }
+  .log-set-input::placeholder { color: #444; font-size: 0.72rem; }
+  .log-set-check {
+    background: #222;
+    border: 1px solid #333;
+    border-radius: 3px;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .log-set-check.done { background: var(--gold); border-color: var(--gold); color: #000; }
+  .log-col-headers {
+    display: grid;
+    grid-template-columns: 30px 1fr 1fr auto;
+    gap: 0.4rem;
+    margin-bottom: 0.3rem;
+  }
+  .log-col-header {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #555;
+    text-align: center;
+  }
+  .submit-all-btn {
+    width: 100%;
+    background: var(--gold);
+    border: none;
+    border-radius: 4px;
+    padding: 1rem;
+    color: var(--black);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    transition: background 0.15s;
+  }
+  .submit-all-btn:hover { background: #e0bb5a; }
+  .submit-all-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+  .who-select {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .who-btn {
+    flex: 1;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    padding: 0.6rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    color: var(--mid);
+    transition: all 0.15s;
+  }
+  .who-btn.ezra-active { border-color: var(--ezra); color: var(--ezra); }
+  .who-btn.abram-active { border-color: var(--abram); color: var(--abram); }
+  .workout-toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #27ae60;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 999;
+    white-space: nowrap;
+  }
+  .workout-toast.show { opacity: 1; }
+
 </style>
 </head>
 <body>
@@ -321,15 +465,15 @@
 </header>
 
 <nav>
-  <button class="active" onclick="showTab('nutrition')">🥩 Nutrition</button>
-  <button onclick="showTab('workouts')">💪 Workouts</button>
+  <button class="active" onclick="showTab('workouts')">💪 Workouts</button>
+  <button onclick="showTab('nutrition')">🥩 Nutrition</button>
   <button onclick="showTab('skills')">🏀🏈 Skills</button>
   <button onclick="showTab('schedule')">📅 Schedule</button>
   <button onclick="showTab('recovery')">❄️ Recovery</button>
 </nav>
 
 <!-- ===== NUTRITION ===== -->
-<div id="nutrition" class="section active">
+<div id="nutrition" class="section">
   <div class="section-header">
     <h2>Nutrition Plan</h2>
     <p>Gluten-free · No processed food · No processed sugar · Whole food fuel for athletes training 4x/week</p>
@@ -525,7 +669,7 @@
 </div>
 
 <!-- ===== WORKOUTS ===== -->
-<div id="workouts" class="section">
+<div id="workouts" class="section active">
   <div class="section-header">
     <h2>Strength & Speed Workouts</h2>
     <p>3 days/week · Upper / Lower / Full Body · 30–40 min including warmup · Ages 10 & 12</p>
@@ -548,32 +692,490 @@
     </div>
     <div class="day-content">
       <div style="color:#888; font-size:0.78rem; margin-bottom:0.75rem;">After warmup — ~25 min of work</div>
-      <div class="exercise-row"><span class="exercise-name">DB Bench Press <span style="color:#666; font-size:0.8rem;">— 15lb Ezra / 10lb Abram</span></span><span class="exercise-sets">3 × 10</span></div>
-      <div class="exercise-row"><span class="exercise-name">DB Bent-Over Row</span><span class="exercise-sets">3 × 10 ea</span></div>
-      <div class="exercise-row"><span class="exercise-name">DB Shoulder Press</span><span class="exercise-sets">3 × 10</span></div>
-      <div class="exercise-row"><span class="exercise-name">Band Pull-Apart (rear delt / posture)</span><span class="exercise-sets">3 × 15</span></div>
-      <div class="exercise-row"><span class="exercise-name">Pushups (controlled, full range)</span><span class="exercise-sets">3 × max</span></div>
-      <div class="exercise-row"><span class="exercise-name">Plank Hold</span><span class="exercise-sets">3 × 30 sec</span></div>
-      <div class="exercise-row"><span class="exercise-name">Dead Bug</span><span class="exercise-sets">3 × 8 ea</span></div>
+      <div class="exercise-row">
+        <span class="exercise-name">DB Bench Press <span style="color:#666; font-size:0.8rem;">— 15lb Ezra / 10lb Abram</span><button class="log-toggle" onclick="toggleLog('a-db-bench-press')">+ Log</button></span>
+        <span class="exercise-sets">3 × 10</span>
+      </div>
+      
+    <div class="inline-log" id="log-a-db-bench-press">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-db-bench-press-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-db-bench-press-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-db-bench-press-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-db-bench-press-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-db-bench-press-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-db-bench-press-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-db-bench-press-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-db-bench-press-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-db-bench-press-c3">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">DB Bent-Over Row<button class="log-toggle" onclick="toggleLog('a-db-row')">+ Log</button></span>
+        <span class="exercise-sets">3 × 10 ea</span>
+      </div>
+      
+    <div class="inline-log" id="log-a-db-row">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-db-row-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-db-row-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-db-row-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-db-row-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-db-row-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-db-row-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-db-row-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-db-row-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-db-row-c3">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">DB Shoulder Press<button class="log-toggle" onclick="toggleLog('a-shoulder-press')">+ Log</button></span>
+        <span class="exercise-sets">3 × 10</span>
+      </div>
+      
+    <div class="inline-log" id="log-a-shoulder-press">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-shoulder-press-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-shoulder-press-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-shoulder-press-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-shoulder-press-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-shoulder-press-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-shoulder-press-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-shoulder-press-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-shoulder-press-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-shoulder-press-c3">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Band Pull-Apart<button class="log-toggle" onclick="toggleLog('a-band-pull-apart')">+ Log</button></span>
+        <span class="exercise-sets">3 × 15</span>
+      </div>
+      
+    <div class="inline-log" id="log-a-band-pull-apart">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-band-pull-apart-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-band-pull-apart-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-band-pull-apart-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-band-pull-apart-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-band-pull-apart-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-band-pull-apart-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-band-pull-apart-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-band-pull-apart-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-band-pull-apart-c3">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Pushups<button class="log-toggle" onclick="toggleLog('a-pushups')">+ Log</button></span>
+        <span class="exercise-sets">3 × max</span>
+      </div>
+      
+    <div class="inline-log" id="log-a-pushups">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-pushups-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-pushups-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-pushups-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-pushups-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-pushups-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-pushups-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-pushups-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-pushups-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-pushups-c3">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Plank Hold<button class="log-toggle" onclick="toggleLog('a-plank-hold')">+ Log</button></span>
+        <span class="exercise-sets">3 × 30 sec</span>
+      </div>
+      
+    <div class="inline-log" id="log-a-plank-hold">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-plank-hold-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-plank-hold-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-plank-hold-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-plank-hold-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-plank-hold-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-plank-hold-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-plank-hold-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-plank-hold-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-plank-hold-c3">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Dead Bug<button class="log-toggle" onclick="toggleLog('a-dead-bug')">+ Log</button></span>
+        <span class="exercise-sets">3 × 8 ea</span>
+      </div>
+      
+    <div class="inline-log" id="log-a-dead-bug">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-dead-bug-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-dead-bug-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-dead-bug-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-dead-bug-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-dead-bug-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-dead-bug-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="a-dead-bug-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="a-dead-bug-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="a-dead-bug-c3">✓</div>
+        </div>
+    </div>
       <div style="margin-top:0.75rem; font-size:0.8rem; color:#888; font-style:italic;">Finish: 2 rounds — 10 yd sprint × 4, full rest between</div>
+    
+    <div style="margin-top:1.25rem; padding:1rem 0;">
+      <div style="font-family:'Barlow Condensed',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.25em; text-transform:uppercase; color:var(--mid); margin-bottom:0.75rem;">Who completed Day A?</div>
+      <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+        <button class="who-btn" id="btn-day-a-ezra" onclick="selectWho('day-a', 'Ezra')" style="flex:1; background:var(--surface2); border:2px solid var(--border); border-radius:4px; padding:0.6rem; font-family:'Barlow Condensed',sans-serif; font-size:0.9rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; cursor:pointer; color:var(--mid); transition:all 0.15s;">Ezra</button>
+        <button class="who-btn" id="btn-day-a-abram" onclick="selectWho('day-a', 'Abram')" style="flex:1; background:var(--surface2); border:2px solid var(--border); border-radius:4px; padding:0.6rem; font-family:'Barlow Condensed',sans-serif; font-size:0.9rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; cursor:pointer; color:var(--mid); transition:all 0.15s;">Abram</button>
+      </div>
+      <button class="submit-all-btn" onclick="submitDay('day-a')" id="submit-day-a" style="width:100%; background:var(--gold); border:none; border-radius:4px; padding:1rem; color:var(--black); font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:background 0.15s;">Submit Day A</button>
+    </div>
     </div>
   </div>
 
   <div class="day-block">
     <div class="day-header">
-      <h3>Day B — Lower Body</h3>
+      <h3>Day B — Lower Body</h3> — Lower Body</h3>
       <span class="focus-tag">Strength · Power · Speed</span>
     </div>
     <div class="day-content">
       <div style="color:#888; font-size:0.78rem; margin-bottom:0.75rem;">After warmup — ~25 min of work</div>
-      <div class="exercise-row"><span class="exercise-name">Goblet Squat <span style="color:#666; font-size:0.8rem;">— 20lb Ezra / 15lb Abram</span></span><span class="exercise-sets">3 × 10</span></div>
-      <div class="exercise-row"><span class="exercise-name">Romanian Deadlift (RDL) <span style="color:#666; font-size:0.8rem;">— DB, light to moderate</span></span><span class="exercise-sets">3 × 10</span></div>
-      <div class="exercise-row"><span class="exercise-name">Reverse Lunge</span><span class="exercise-sets">3 × 8 ea</span></div>
-      <div class="exercise-row"><span class="exercise-name">Lateral Band Walk</span><span class="exercise-sets">3 × 12 ea</span></div>
-      <div class="exercise-row"><span class="exercise-name">Box Jump / Broad Jump <span style="color:#666; font-size:0.8rem;">— max effort</span></span><span class="exercise-sets">4 × 4</span></div>
-      <div class="exercise-row"><span class="exercise-name">Single-Leg Glute Bridge</span><span class="exercise-sets">3 × 10 ea</span></div>
-      <div class="exercise-row"><span class="exercise-name">Calf Raises <span style="color:#666; font-size:0.8rem;">— slow & controlled</span></span><span class="exercise-sets">3 × 15</span></div>
+      <div class="exercise-row">
+        <span class="exercise-name">Goblet Squat <span style="color:#666; font-size:0.8rem;">— 20lb Ezra / 15lb Abram</span><button class="log-toggle" onclick="toggleLog('b-goblet-squat')">+ Log</button></span>
+        <span class="exercise-sets">3 × 10</span>
+      </div>
+      
+    <div class="inline-log" id="log-b-goblet-squat">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-goblet-squat-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-goblet-squat-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-goblet-squat-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-goblet-squat-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-goblet-squat-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-goblet-squat-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-goblet-squat-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-goblet-squat-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-goblet-squat-c3">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Romanian Deadlift (RDL) <span style="color:#666; font-size:0.8rem;">— DB, light to moderate</span><button class="log-toggle" onclick="toggleLog('b-rdl')">+ Log</button></span>
+        <span class="exercise-sets">3 × 10</span>
+      </div>
+      
+    <div class="inline-log" id="log-b-rdl">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-rdl-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-rdl-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-rdl-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-rdl-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-rdl-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-rdl-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-rdl-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-rdl-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-rdl-c3">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Reverse Lunge<button class="log-toggle" onclick="toggleLog('b-reverse-lunge')">+ Log</button></span>
+        <span class="exercise-sets">3 × 8 ea</span>
+      </div>
+      
+    <div class="inline-log" id="log-b-reverse-lunge">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-reverse-lunge-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-reverse-lunge-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-reverse-lunge-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-reverse-lunge-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-reverse-lunge-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-reverse-lunge-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-reverse-lunge-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-reverse-lunge-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-reverse-lunge-c3">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Lateral Band Walk<button class="log-toggle" onclick="toggleLog('b-band-walk')">+ Log</button></span>
+        <span class="exercise-sets">3 × 12 ea</span>
+      </div>
+      
+    <div class="inline-log" id="log-b-band-walk">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-band-walk-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-band-walk-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-band-walk-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-band-walk-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-band-walk-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-band-walk-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-band-walk-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-band-walk-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-band-walk-c3">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Box Jump / Broad Jump <span style="color:#666; font-size:0.8rem;">— max effort</span><button class="log-toggle" onclick="toggleLog('b-box-jump')">+ Log</button></span>
+        <span class="exercise-sets">4 × 4</span>
+      </div>
+      
+    <div class="inline-log" id="log-b-box-jump">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-box-jump-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-box-jump-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-box-jump-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-box-jump-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-box-jump-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-box-jump-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-box-jump-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-box-jump-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-box-jump-c3">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">4</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-box-jump-w4">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-box-jump-r4">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-box-jump-c4">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Single-Leg Glute Bridge<button class="log-toggle" onclick="toggleLog('b-glute-bridge')">+ Log</button></span>
+        <span class="exercise-sets">3 × 10 ea</span>
+      </div>
+      
+    <div class="inline-log" id="log-b-glute-bridge">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-glute-bridge-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-glute-bridge-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-glute-bridge-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-glute-bridge-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-glute-bridge-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-glute-bridge-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-glute-bridge-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-glute-bridge-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-glute-bridge-c3">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Calf Raises <span style="color:#666; font-size:0.8rem;">— slow & controlled</span><button class="log-toggle" onclick="toggleLog('b-calf-raises')">+ Log</button></span>
+        <span class="exercise-sets">3 × 15</span>
+      </div>
+      
+    <div class="inline-log" id="log-b-calf-raises">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-calf-raises-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-calf-raises-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-calf-raises-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-calf-raises-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-calf-raises-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-calf-raises-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="b-calf-raises-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="b-calf-raises-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="b-calf-raises-c3">✓</div>
+        </div>
+    </div>
       <div style="margin-top:0.75rem; font-size:0.8rem; color:#888; font-style:italic;">Finish: Speed ladder — 3 patterns × 3 passes, full rest</div>
+    
+    <div style="margin-top:1.25rem; padding:1rem 0;">
+      <div style="font-family:'Barlow Condensed',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.25em; text-transform:uppercase; color:var(--mid); margin-bottom:0.75rem;">Who completed Day B?</div>
+      <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+        <button class="who-btn" id="btn-day-b-ezra" onclick="selectWho('day-b', 'Ezra')" style="flex:1; background:var(--surface2); border:2px solid var(--border); border-radius:4px; padding:0.6rem; font-family:'Barlow Condensed',sans-serif; font-size:0.9rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; cursor:pointer; color:var(--mid); transition:all 0.15s;">Ezra</button>
+        <button class="who-btn" id="btn-day-b-abram" onclick="selectWho('day-b', 'Abram')" style="flex:1; background:var(--surface2); border:2px solid var(--border); border-radius:4px; padding:0.6rem; font-family:'Barlow Condensed',sans-serif; font-size:0.9rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; cursor:pointer; color:var(--mid); transition:all 0.15s;">Abram</button>
+      </div>
+      <button class="submit-all-btn" onclick="submitDay('day-b')" id="submit-day-b" style="width:100%; background:var(--gold); border:none; border-radius:4px; padding:1rem; color:var(--black); font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:background 0.15s;">Submit Day B</button>
+    </div>
     </div>
   </div>
 
@@ -584,14 +1186,240 @@
     </div>
     <div class="day-content">
       <div style="color:#888; font-size:0.78rem; margin-bottom:0.75rem;">After warmup — ~25 min of work</div>
-      <div class="exercise-row"><span class="exercise-name">DB Thruster (squat to press)</span><span class="exercise-sets">3 × 8</span></div>
-      <div class="exercise-row"><span class="exercise-name">Pulldown (pulley system) or Band Pull-Down</span><span class="exercise-sets">3 × 10</span></div>
-      <div class="exercise-row"><span class="exercise-name">Step-Up with DB <span style="color:#666; font-size:0.8rem;">— bench or box</span></span><span class="exercise-sets">3 × 8 ea</span></div>
-      <div class="exercise-row"><span class="exercise-name">Pushup to T-Rotation</span><span class="exercise-sets">3 × 6 ea</span></div>
-      <div class="exercise-row"><span class="exercise-name">Farmer Carry <span style="color:#666; font-size:0.8rem;">— 20lb ea Ezra / 15lb ea Abram</span></span><span class="exercise-sets">3 × 30 yd</span></div>
-      <div class="exercise-row"><span class="exercise-name">Medicine Ball Slam (or heavy ball squat) <span style="color:#666; font-size:0.8rem;">— or sub with burpee</span></span><span class="exercise-sets">3 × 8</span></div>
-      <div class="exercise-row"><span class="exercise-name">Lateral Hurdle Hops</span><span class="exercise-sets">3 × 8 ea</span></div>
+      <div class="exercise-row">
+        <span class="exercise-name">DB Thruster<button class="log-toggle" onclick="toggleLog('c-thruster')">+ Log</button></span>
+        <span class="exercise-sets">3 × 8</span>
+      </div>
+      
+    <div class="inline-log" id="log-c-thruster">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-thruster-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-thruster-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-thruster-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-thruster-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-thruster-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-thruster-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-thruster-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-thruster-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-thruster-c3">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Pulldown (pulley system) or Band Pull-Down<button class="log-toggle" onclick="toggleLog('c-pulldown')">+ Log</button></span>
+        <span class="exercise-sets">3 × 10</span>
+      </div>
+      
+    <div class="inline-log" id="log-c-pulldown">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-pulldown-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-pulldown-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-pulldown-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-pulldown-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-pulldown-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-pulldown-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-pulldown-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-pulldown-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-pulldown-c3">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Step-Up with DB <span style="color:#666; font-size:0.8rem;">— bench or box</span><button class="log-toggle" onclick="toggleLog('c-step-up')">+ Log</button></span>
+        <span class="exercise-sets">3 × 8 ea</span>
+      </div>
+      
+    <div class="inline-log" id="log-c-step-up">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-step-up-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-step-up-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-step-up-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-step-up-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-step-up-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-step-up-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-step-up-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-step-up-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-step-up-c3">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Pushup to T-Rotation<button class="log-toggle" onclick="toggleLog('c-pushup-t')">+ Log</button></span>
+        <span class="exercise-sets">3 × 6 ea</span>
+      </div>
+      
+    <div class="inline-log" id="log-c-pushup-t">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-pushup-t-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-pushup-t-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-pushup-t-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-pushup-t-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-pushup-t-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-pushup-t-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-pushup-t-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-pushup-t-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-pushup-t-c3">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Farmer Carry <span style="color:#666; font-size:0.8rem;">— 20lb ea Ezra / 15lb ea Abram</span><button class="log-toggle" onclick="toggleLog('c-farmer-carry')">+ Log</button></span>
+        <span class="exercise-sets">3 × 30 yd</span>
+      </div>
+      
+    <div class="inline-log" id="log-c-farmer-carry">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-farmer-carry-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-farmer-carry-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-farmer-carry-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-farmer-carry-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-farmer-carry-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-farmer-carry-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-farmer-carry-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-farmer-carry-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-farmer-carry-c3">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Medicine Ball Slam <span style="color:#666; font-size:0.8rem;">— or sub with burpee</span><button class="log-toggle" onclick="toggleLog('c-med-ball')">+ Log</button></span>
+        <span class="exercise-sets">3 × 8</span>
+      </div>
+      
+    <div class="inline-log" id="log-c-med-ball">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-med-ball-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-med-ball-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-med-ball-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-med-ball-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-med-ball-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-med-ball-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-med-ball-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-med-ball-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-med-ball-c3">✓</div>
+        </div>
+    </div>
+      <div class="exercise-row">
+        <span class="exercise-name">Lateral Hurdle Hops<button class="log-toggle" onclick="toggleLog('c-hurdle-hops')">+ Log</button></span>
+        <span class="exercise-sets">3 × 8 ea</span>
+      </div>
+      
+    <div class="inline-log" id="log-c-hurdle-hops">
+      <div class="log-col-headers">
+        <div class="log-col-header"></div>
+        <div class="log-col-header">Weight</div>
+        <div class="log-col-header">Reps</div>
+        <div class="log-col-header">✓</div>
+      </div>
+      
+        <div class="log-set-row">
+          <div class="log-set-num">1</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-hurdle-hops-w1">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-hurdle-hops-r1">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-hurdle-hops-c1">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">2</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-hurdle-hops-w2">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-hurdle-hops-r2">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-hurdle-hops-c2">✓</div>
+        </div>
+        <div class="log-set-row">
+          <div class="log-set-num">3</div>
+          <input type="number" class="log-set-input" placeholder="lbs" min="0" step="2.5" id="c-hurdle-hops-w3">
+          <input type="number" class="log-set-input" placeholder="reps" min="0" id="c-hurdle-hops-r3">
+          <div class="log-set-check" onclick="toggleCheck(this)" id="c-hurdle-hops-c3">✓</div>
+        </div>
+    </div>
       <div style="margin-top:0.75rem; font-size:0.8rem; color:#888; font-style:italic;">Finish: Cone drill — 5-10-5 shuttle × 4 reps, full rest between</div>
+    
+    <div style="margin-top:1.25rem; padding:1rem 0;">
+      <div style="font-family:'Barlow Condensed',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.25em; text-transform:uppercase; color:var(--mid); margin-bottom:0.75rem;">Who completed Day C?</div>
+      <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+        <button class="who-btn" id="btn-day-c-ezra" onclick="selectWho('day-c', 'Ezra')" style="flex:1; background:var(--surface2); border:2px solid var(--border); border-radius:4px; padding:0.6rem; font-family:'Barlow Condensed',sans-serif; font-size:0.9rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; cursor:pointer; color:var(--mid); transition:all 0.15s;">Ezra</button>
+        <button class="who-btn" id="btn-day-c-abram" onclick="selectWho('day-c', 'Abram')" style="flex:1; background:var(--surface2); border:2px solid var(--border); border-radius:4px; padding:0.6rem; font-family:'Barlow Condensed',sans-serif; font-size:0.9rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; cursor:pointer; color:var(--mid); transition:all 0.15s;">Abram</button>
+      </div>
+      <button class="submit-all-btn" onclick="submitDay('day-c')" id="submit-day-c" style="width:100%; background:var(--gold); border:none; border-radius:4px; padding:1rem; color:var(--black); font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:background 0.15s;">Submit Day C</button>
+    </div>
     </div>
   </div>
 
@@ -608,6 +1436,10 @@
 </div>
 
 <!-- ===== SKILLS ===== -->
+</div>
+
+<div class="workout-toast" id="workoutToast">Workout Logged! 💪</div>
+
 <div id="skills" class="section">
   <div class="section-header">
     <h2>Skill Blocks</h2>
@@ -871,6 +1703,135 @@
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     event.target.classList.add('active');
+  }
+</script>
+
+
+
+<script>
+  const SUPABASE_URL = 'https://thfkvablbyrqdndoaiqo.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_oliFMYDCKU98JHD7CxqFxg_YtjNqG03';
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let selectedWho = null;
+
+  function toggleLog(id) {
+    const el = document.getElementById('log-' + id);
+    if (el) el.classList.toggle('open');
+  }
+
+  function toggleCheck(el) {
+    el.classList.toggle('done');
+  }
+
+  function selectWho(name) {
+    selectedWho = name;
+    document.getElementById('btn-ezra').className = 'who-btn' + (name === 'Ezra' ? ' ezra-active' : '');
+    document.getElementById('btn-abram').className = 'who-btn' + (name === 'Abram' ? ' abram-active' : '');
+  }
+
+  async function submitAll() {
+    if (!selectedWho) { alert('Select who is logging first.'); return; }
+    const btn = document.getElementById('submitAllBtn');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    const today = new Date().toISOString().split('T')[0];
+    const logs = [];
+
+    document.querySelectorAll('.inline-log.open').forEach(logDiv => {
+      const exId = logDiv.id.replace('log-', '');
+      const exName = logDiv.previousElementSibling?.querySelector('.exercise-name')?.childNodes[0]?.textContent?.trim() || exId;
+      logDiv.querySelectorAll('.log-set-row').forEach((row, i) => {
+        const setNum = i + 1;
+        const weight = parseFloat(document.getElementById(exId + '-w' + setNum)?.value) || 0;
+        const reps = parseInt(document.getElementById(exId + '-r' + setNum)?.value) || 0;
+        if (reps > 0 || weight > 0) {
+          logs.push({ member: selectedWho, exercise: exName, sets: setNum, reps, weight, logged_date: today });
+        }
+      });
+    });
+
+    if (logs.length === 0) { alert('Open at least one exercise log and enter some data.'); btn.disabled = false; btn.textContent = 'Submit Workout'; return; }
+
+    const { error } = await db.from('workout_logs').insert(logs);
+    if (error) { alert('Error: ' + error.message); btn.disabled = false; btn.textContent = 'Submit Workout'; return; }
+
+    document.getElementById('workoutToast').classList.add('show');
+    setTimeout(() => document.getElementById('workoutToast').classList.remove('show'), 3000);
+    btn.disabled = false;
+    btn.textContent = 'Submit Workout';
+
+    // Close all log panels and clear inputs
+    document.querySelectorAll('.inline-log').forEach(l => l.classList.remove('open'));
+    document.querySelectorAll('.log-set-input').forEach(i => i.value = '');
+    document.querySelectorAll('.log-set-check').forEach(c => c.classList.remove('done'));
+  }
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://thfkvablbyrqdndoaiqo.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_oliFMYDCKU98JHD7CxqFxg_YtjNqG03';
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  const dayWho = {};
+
+  function toggleLog(id) {
+    const el = document.getElementById('log-' + id);
+    if (el) el.classList.toggle('open');
+  }
+
+  function toggleCheck(el) { el.classList.toggle('done'); }
+
+  function selectWho(dayId, name) {
+    dayWho[dayId] = name;
+    const ezraBtn = document.getElementById('btn-' + dayId + '-ezra');
+    const abramBtn = document.getElementById('btn-' + dayId + '-abram');
+    if (ezraBtn) { ezraBtn.style.borderColor = name === 'Ezra' ? 'var(--ezra)' : 'var(--border)'; ezraBtn.style.color = name === 'Ezra' ? 'var(--ezra)' : 'var(--mid)'; }
+    if (abramBtn) { abramBtn.style.borderColor = name === 'Abram' ? 'var(--abram)' : 'var(--border)'; abramBtn.style.color = name === 'Abram' ? 'var(--abram)' : 'var(--mid)'; }
+  }
+
+  async function submitDay(dayId) {
+    const who = dayWho[dayId];
+    if (!who) { alert('Select who completed this workout first.'); return; }
+
+    const btn = document.getElementById('submit-' + dayId);
+    btn.disabled = true; btn.textContent = 'Saving...';
+
+    const today = new Date().toISOString().split('T')[0];
+    const logs = [];
+    const prefix = dayId === 'day-a' ? 'a-' : dayId === 'day-b' ? 'b-' : 'c-';
+
+    document.querySelectorAll('.inline-log.open').forEach(logDiv => {
+      const exId = logDiv.id.replace('log-', '');
+      if (!exId.startsWith(prefix)) return;
+      const nameEl = logDiv.previousElementSibling?.querySelector('.exercise-name');
+      const exName = nameEl ? nameEl.childNodes[0]?.textContent?.trim() : exId;
+      logDiv.querySelectorAll('.log-set-row').forEach((row, i) => {
+        const setNum = i + 1;
+        const weight = parseFloat(document.getElementById(exId + '-w' + setNum)?.value) || 0;
+        const reps = parseInt(document.getElementById(exId + '-r' + setNum)?.value) || 0;
+        if (reps > 0 || weight > 0) logs.push({ member: who, exercise: exName, sets: setNum, reps, weight, logged_date: today });
+      });
+    });
+
+    if (logs.length === 0) { alert('Log at least one set first — tap + Log next to an exercise.'); btn.disabled = false; btn.textContent = 'Submit ' + dayId.replace('day-', 'Day ').toUpperCase(); return; }
+
+    const { error } = await db.from('workout_logs').insert(logs);
+    if (error) { alert('Error: ' + error.message); btn.disabled = false; btn.textContent = 'Submit ' + dayId.replace('day-', 'Day ').toUpperCase(); return; }
+
+    const toast = document.getElementById('workoutToast');
+    toast.textContent = who + '\'s workout logged! 💪';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+
+    btn.disabled = false;
+    btn.textContent = '✓ ' + dayId.replace('day-', 'Day ').replace('a','A').replace('b','B').replace('c','C') + ' Submitted!';
+    btn.style.background = '#27ae60';
   }
 </script>
 
