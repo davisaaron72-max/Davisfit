@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DavisFit</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap');
+
+  :root {
+    --black: #0a0a0a;
+    --surface: #141414;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --gold: #c9a84c;
+    --gold-dim: #8a6f2e;
+    --off-white: #f0ede6;
+    --mid: #888;
+    --ezra: #d4a017;
+    --abram: #c0392b;
+    --noah: #e8a0b0;
+    --uriah: #e07b39;
+    --amy: #9b59b6;
+    --aaron: #2980b9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--off-white);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    padding: 2rem 1.5rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .logo span { color: var(--gold); }
+  .logo-sub {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-top: 0.3rem;
+  }
+  .header-date {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mid);
+    text-align: right;
+  }
+  .header-date strong { color: var(--gold); display: block; font-size: 1rem; }
+
+  /* HERO BAND */
+  .hero-band {
+    background: var(--surface);
+    border-bottom: 2px solid var(--gold);
+    padding: 1.25rem 1.5rem;
+    text-align: center;
+  }
+  .hero-band p {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* FAMILY GRID */
+  .family-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .member-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: transform 0.15s, border-color 0.15s;
+    position: relative;
+  }
+  .member-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--card-color);
+  }
+  .member-card-top {
+    height: 5px;
+    background: var(--card-color);
+  }
+  .member-card-body {
+    padding: 1.25rem 1.25rem 1rem;
+  }
+  .member-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--off-white);
+    line-height: 1;
+  }
+  .member-role {
+    font-size: 0.78rem;
+    color: var(--card-color);
+    font-weight: 500;
+    margin-top: 0.2rem;
+    letter-spacing: 0.05em;
+  }
+  .member-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.85rem;
+  }
+  .tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.55rem;
+    border-radius: 2px;
+    background: var(--surface2);
+    color: var(--mid);
+    border: 1px solid var(--border);
+  }
+  .member-card-footer {
+    padding: 0.75rem 1.25rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .view-plan {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--card-color);
+  }
+  .arrow {
+    color: var(--card-color);
+    font-size: 1rem;
+  }
+  .coming-soon {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--border);
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+  }
+
+  /* SUMMER STATS STRIP */
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 3rem;
+  }
+  .stat-box {
+    background: var(--surface);
+    padding: 1.25rem 1rem;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    color: var(--mid);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 0.3rem;
+    font-weight: 500;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--mid);
+    font-size: 0.78rem;
+    letter-spacing: 0.05em;
+  }
+  footer strong { color: var(--gold); }
+
+  @media (max-width: 600px) {
+    .family-grid { grid-template-columns: 1fr; }
+    .stats-strip { grid-template-columns: repeat(2, 1fr); }
+    header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+    .header-date { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">Davis<span>Fit</span></div>
+    <div class="logo-sub">Family Fitness · Summer 2026</div>
+  </div>
+  <div class="header-date">
+    <strong id="current-date"></strong>
+    Week of Summer
+  </div>
+</header>
+
+<div class="hero-band">
+  <p>No excuses &nbsp;·&nbsp; No shortcuts &nbsp;·&nbsp; Show up every day</p>
+</div>
+
+<main>
+
+  <div class="stats-strip">
+    <div class="stat-box">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Active Members</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">12</div>
+      <div class="stat-label">Weeks of Summer</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">4</div>
+      <div class="stat-label">Days / Week</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">No Excuses</div>
+    </div>
+  </div>
+
+  <div class="section-label">Select Your Plan</div>
+
+  <div class="family-grid">
+
+    <!-- EZRA -->
+    <a href="ezra-abram.html" class="member-card" style="--card-color: var(--ezra);">
+      <div class="member-card-top"></div>
+      <div class="member-card-body">
+        <div class="member-name">Ezra</div>
+        <div class="member-role">Basketball · Point Guard · Age 12</div>
+        <div class="member-tags">
+          <span class="tag">Nutrition</span>
+          <span class="tag">Workouts</span>
+          <span class="tag">Skills</span>
+          <span class="tag">Schedule</span>
+          <span class="tag">Recovery</span>
+        </div>
+      </div>
+      <div class="member-card-footer">
+        <span class="view-plan">View Plan</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+    <!-- ABRAM -->
+    <a href="ezra-abram.html" class="member-card" style="--card-color: var(--abram);">
+      <div class="member-card-top"></div>
+      <div class="member-card-body">
+        <div class="member-name">Abram</div>
+        <div class="member-role">Football · Linebacker · Age 10</div>
+        <div class="member-tags">
+          <span class="tag">Nutrition</span>
+          <span class="tag">Workouts</span>
+          <span class="tag">Skills</span>
+          <span class="tag">Schedule</span>
+          <span class="tag">Recovery</span>
+        </div>
+      </div>
+      <div class="member-card-footer">
+        <span class="view-plan">View Plan</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+    <!-- NOAH -->
+    <a href="noah.html" class="member-card" style="--card-color: var(--noah);">
+      <div class="member-card-top"></div>
+      <div class="member-card-body">
+        <div class="member-name">Noah</div>
+        <div class="member-role">Fitness · Building the Habit · Age 13</div>
+        <div class="member-tags">
+          <span class="tag">Workouts</span>
+          <span class="tag">Treadmill</span>
+          <span class="tag">Schedule</span>
+          <span class="tag">Recovery</span>
+          <span class="tag">Nutrition TBD</span>
+        </div>
+      </div>
+      <div class="member-card-footer">
+        <span class="view-plan">View Plan</span>
+        <span class="arrow">→</span>
+      </div>
+    </a>
+
+    <!-- URIAH -->
+    <div class="member-card" style="--card-color: var(--uriah); opacity: 0.5; cursor: default;">
+      <div class="member-card-top"></div>
+      <div class="member-card-body">
+        <div class="member-name">Uriah</div>
+        <div class="member-role">Coming Soon · Age 16</div>
+        <div class="member-tags">
+          <span class="tag">Plan in Progress</span>
+        </div>
+      </div>
+      <div class="member-card-footer">
+        <span class="coming-soon">Coming Soon</span>
+      </div>
+    </div>
+
+    <!-- AMY -->
+    <div class="member-card" style="--card-color: var(--amy); opacity: 0.5; cursor: default;">
+      <div class="member-card-top"></div>
+      <div class="member-card-body">
+        <div class="member-name">Amy</div>
+        <div class="member-role">Coming Soon</div>
+        <div class="member-tags">
+          <span class="tag">Plan in Progress</span>
+        </div>
+      </div>
+      <div class="member-card-footer">
+        <span class="coming-soon">Coming Soon</span>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer>
+  <strong>DavisFit</strong> &nbsp;·&nbsp; Summer 2026 &nbsp;·&nbsp; Built for the Davis Family
+</footer>
+
+<script>
+  const d = new Date();
+  const opts = { month: 'long', day: 'numeric', year: 'numeric' };
+  document.getElementById('current-date').textContent = d.toLocaleDateString('en-US', opts);
+</script>
+
+</body>
+</html>

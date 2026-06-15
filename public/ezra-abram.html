@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Davis Boys Summer Plan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap');
+
+  :root {
+    --black: #0d0d0d;
+    --off-white: #f5f3ee;
+    --gold: #c9a84c;
+    --ezra-blue: #1a3a5c;
+    --abram-red: #8b1a1a;
+    --mid-gray: #4a4a4a;
+    --light-gray: #e2e0da;
+    --section-bg: #1a1a1a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--black);
+    color: var(--off-white);
+    font-family: 'Barlow', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--black);
+    border-bottom: 3px solid var(--gold);
+    padding: 2.5rem 2rem 2rem;
+    text-align: center;
+  }
+  header .eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  header h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    color: var(--off-white);
+  }
+  header h1 span { color: var(--gold); }
+  header p {
+    margin-top: 0.75rem;
+    color: #aaa;
+    font-size: 0.9rem;
+  }
+
+  /* NAV TABS */
+  nav {
+    display: flex;
+    background: #111;
+    border-bottom: 1px solid #333;
+    overflow-x: auto;
+  }
+  nav button {
+    flex: 1;
+    min-width: 120px;
+    padding: 1rem 0.5rem;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: #888;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  nav button:hover { color: var(--off-white); }
+  nav button.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  /* SECTIONS */
+  .section { display: none; padding: 2rem 1.5rem; max-width: 900px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #2a2a2a;
+  }
+
+  /* PLAYER TAGS */
+  .tag {
+    display: inline-block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    margin-right: 0.4rem;
+    margin-bottom: 0.25rem;
+  }
+  .tag-ezra { background: var(--ezra-blue); color: #a8c8f0; }
+  .tag-abram { background: var(--abram-red); color: #f0a8a8; }
+  .tag-both { background: #2a2a1a; color: var(--gold); border: 1px solid var(--gold); }
+
+  /* MEAL GRID */
+  .meal-block {
+    background: #111;
+    border-left: 3px solid var(--gold);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    border-radius: 0 4px 4px 0;
+  }
+  .meal-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.35rem;
+  }
+  .meal-block ul { padding-left: 1.1rem; }
+  .meal-block li { margin-bottom: 0.2rem; font-size: 0.92rem; color: #ccc; }
+  .meal-block .note { font-size: 0.8rem; color: #888; margin-top: 0.4rem; font-style: italic; }
+
+  /* WORKOUT */
+  .day-block {
+    background: #111;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+  .day-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.25rem;
+    background: #222;
+    cursor: pointer;
+  }
+  .day-header h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--off-white);
+  }
+  .day-header .focus-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .day-content { padding: 1rem 1.25rem; }
+  .exercise-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid #222;
+    font-size: 0.9rem;
+  }
+  .exercise-row:last-child { border-bottom: none; }
+  .exercise-name { color: #ddd; flex: 2; }
+  .exercise-sets { color: var(--gold); font-family: 'Barlow Condensed', sans-serif; font-weight: 600; flex: 1; text-align: right; white-space: nowrap; }
+
+  /* SCHEDULE */
+  .week-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem; }
+  .day-row {
+    background: #111;
+    border-radius: 4px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 90px 1fr;
+  }
+  .day-name {
+    background: #222;
+    padding: 0.85rem 0.75rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+  }
+  .day-activities { padding: 0.75rem 1rem; }
+  .activity {
+    font-size: 0.85rem;
+    color: #ccc;
+    padding: 0.2rem 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .activity .time {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    color: #666;
+    min-width: 65px;
+    font-size: 0.78rem;
+    padding-top: 0.05rem;
+  }
+
+  /* RECOVERY */
+  .recovery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 600px) { .recovery-grid { grid-template-columns: 1fr; } }
+  .recovery-card {
+    background: #111;
+    border-top: 3px solid var(--gold);
+    border-radius: 0 0 4px 4px;
+    padding: 1.1rem;
+  }
+  .recovery-card h4 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+  }
+  .recovery-card ul { padding-left: 1rem; }
+  .recovery-card li { font-size: 0.88rem; color: #ccc; margin-bottom: 0.3rem; }
+
+  /* HYDRATION BAR */
+  .hydration-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #111;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 0.75rem;
+  }
+  .hydration-row .who {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    min-width: 55px;
+  }
+  .hydration-bar-wrap { flex: 1; background: #2a2a2a; border-radius: 2px; height: 8px; }
+  .hydration-bar { height: 8px; border-radius: 2px; background: var(--gold); }
+  .hydration-num { font-family: 'Barlow Condensed', sans-serif; font-weight: 600; color: var(--gold); font-size: 0.9rem; min-width: 60px; text-align: right; }
+
+  /* SECTION HEADER */
+  .section-header {
+    margin-bottom: 1.5rem;
+  }
+  .section-header h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--off-white);
+  }
+  .section-header p { color: #888; font-size: 0.88rem; margin-top: 0.3rem; }
+
+  .divider { border: none; border-top: 1px solid #2a2a2a; margin: 1.5rem 0; }
+
+  .pill-note {
+    display: inline-block;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 20px;
+    padding: 0.3rem 0.85rem;
+    font-size: 0.78rem;
+    color: #aaa;
+    margin: 0.2rem 0.2rem 0.2rem 0;
+  }
+
+  @media (max-width: 500px) {
+    header h1 { font-size: 2rem; }
+    .section { padding: 1.5rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div style="background:#0a0a0a; border-bottom:1px solid #2a2a2a; padding:0.75rem 1.5rem;">
+  <a href="index.html" style="font-family:'Barlow Condensed',sans-serif; font-size:0.78rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#c9a84c; text-decoration:none;">← Back to DavisFit</a>
+</div>
+<header>
+  <div class="eyebrow">Summer 2026 — Davis Household</div>
+  <h1>Athlete <span>Development</span> Plan</h1>
+  <p>Ezra (12, Basketball PG) &nbsp;·&nbsp; Abram (10, Football LB) &nbsp;·&nbsp; Clean Fuel · Strength · Speed · Skill</p>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('nutrition')">🥩 Nutrition</button>
+  <button onclick="showTab('workouts')">💪 Workouts</button>
+  <button onclick="showTab('skills')">🏀🏈 Skills</button>
+  <button onclick="showTab('schedule')">📅 Schedule</button>
+  <button onclick="showTab('recovery')">❄️ Recovery</button>
+</nav>
+
+<!-- ===== NUTRITION ===== -->
+<div id="nutrition" class="section active">
+  <div class="section-header">
+    <h2>Nutrition Plan</h2>
+    <p>Gluten-free · No processed food · No processed sugar · Whole food fuel for athletes training 4x/week</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Daily Targets</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+      <div>
+        <div style="color:#888; font-size:0.75rem; text-transform:uppercase; letter-spacing:.1em; margin-bottom:.3rem;">Ezra — 101 lbs</div>
+        <div style="font-size:0.9rem; color:#ccc;">Calories: <strong style="color:var(--gold)">~1,800–2,000</strong></div>
+        <div style="font-size:0.9rem; color:#ccc;">Protein: <strong style="color:var(--gold)">~85–95g</strong></div>
+        <div style="font-size:0.9rem; color:#ccc;">Carbs: <strong style="color:var(--gold)">~200–230g</strong></div>
+        <div style="font-size:0.9rem; color:#ccc;">Fat: <strong style="color:var(--gold)">~55–65g</strong></div>
+      </div>
+      <div>
+        <div style="color:#888; font-size:0.75rem; text-transform:uppercase; letter-spacing:.1em; margin-bottom:.3rem;">Abram — 80 lbs</div>
+        <div style="font-size:0.9rem; color:#ccc;">Calories: <strong style="color:var(--gold)">~1,500–1,700</strong></div>
+        <div style="font-size:0.9rem; color:#ccc;">Protein: <strong style="color:var(--gold)">~65–75g</strong></div>
+        <div style="font-size:0.9rem; color:#ccc;">Carbs: <strong style="color:var(--gold)">~170–190g</strong></div>
+        <div style="font-size:0.9rem; color:#ccc;">Fat: <strong style="color:var(--gold)">~45–55g</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Meal 1 — Breakfast (7–8am)</div>
+    <div class="meal-block">
+      <div class="meal-label">Option A — Egg & Sweet Potato Power Bowl <span class="tag tag-both">Both</span></div>
+      <ul>
+        <li>3–4 scrambled eggs (Ezra) / 2–3 eggs (Abram)</li>
+        <li>½ sweet potato, cubed and pan-roasted in avocado oil</li>
+        <li>Handful of fresh fruit (berries, banana)</li>
+        <li>Drizzle of raw honey if needed for sweetness</li>
+      </ul>
+    </div>
+    <div class="meal-block">
+      <div class="meal-label">Option B — Ground Beef Hash <span class="tag tag-both">Both</span></div>
+      <ul>
+        <li>4oz (Ezra) / 3oz (Abram) lean ground beef, seasoned</li>
+        <li>Diced sweet potato or white potato + peppers</li>
+        <li>2 eggs cooked into the hash</li>
+        <li>Side of fruit</li>
+      </ul>
+    </div>
+    <div class="meal-block">
+      <div class="meal-label">Option C — Corn Tortilla Breakfast Quesadilla <span class="tag tag-both">Both</span></div>
+      <ul>
+        <li>2 corn tortillas (naturally gluten-free)</li>
+        <li>Eggs + ground beef or shredded chicken inside</li>
+        <li>Salsa, avocado, no sour cream</li>
+        <li><span class="tag tag-ezra">Ezra</span> — no cheese; <span class="tag tag-abram">Abram</span> — add cheese if desired</li>
+      </ul>
+      <div class="note">Corn tortillas are the go-to gluten-free swap for quesadillas throughout the plan.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Snack 1 — Mid-Morning (10–10:30am)</div>
+    <div class="meal-block">
+      <ul>
+        <li>Apple or banana + 2 tbsp almond or sunflower butter</li>
+        <li>Hard-boiled eggs (1–2) with a pinch of salt</li>
+        <li>Rice cakes with almond butter + banana slices</li>
+        <li>Trail mix: almonds, cashews, pumpkin seeds, dried mango (no added sugar)</li>
+      </ul>
+      <div class="note">Rotate options so it stays fresh. Keep snacks simple — prep the night before.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Meal 2 — Lunch (12–1pm)</div>
+    <div class="meal-block">
+      <div class="meal-label">Option A — Steak Rice Bowl <span class="tag tag-both">Both</span></div>
+      <ul>
+        <li>4–5oz (Ezra) / 3–4oz (Abram) sirloin or flank steak, sliced thin</li>
+        <li>½–¾ cup white or jasmine rice</li>
+        <li>Roasted bell peppers, onions, corn</li>
+        <li>Avocado slices, salsa on top</li>
+      </ul>
+    </div>
+    <div class="meal-block">
+      <div class="meal-label">Option B — Salmon + Rice + Roasted Veg <span class="tag tag-both">Both</span></div>
+      <ul>
+        <li>4oz (Ezra) / 3oz (Abram) salmon (baked or pan-seared)</li>
+        <li>½ cup rice or sweet potato</li>
+        <li>Broccoli, carrots, or zucchini roasted in avocado oil + garlic</li>
+      </ul>
+    </div>
+    <div class="meal-block">
+      <div class="meal-label">Option C — Ground Beef Corn Tortilla Tacos <span class="tag tag-both">Both</span></div>
+      <ul>
+        <li>Ground beef seasoned with cumin, garlic, lime — no packet seasoning</li>
+        <li>Corn tortillas, avocado, salsa, lettuce</li>
+        <li><span class="tag tag-abram">Abram</span> — can add shredded cheese</li>
+        <li>Side of fruit or rice</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Snack 2 — Pre-Workout / Afternoon (2:30–3pm)</div>
+    <div class="meal-block">
+      <ul>
+        <li>Banana + handful of almonds</li>
+        <li>Rice cakes + almond butter</li>
+        <li>Dates (2–3) + sunflower seeds — quick natural sugar + fat</li>
+        <li>Small chicken breast strips (meal prepped) + fruit</li>
+      </ul>
+      <div class="note">On workout days, eat this 45–60 min before activity. Simple carb + small protein.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Meal 3 — Dinner (6–7pm)</div>
+    <div class="meal-block">
+      <div class="meal-label">Option A — Grilled Steak + Potatoes + Veg <span class="tag tag-both">Both</span></div>
+      <ul>
+        <li>5–6oz (Ezra) / 4oz (Abram) ribeye, sirloin, or NY strip</li>
+        <li>Roasted or mashed potatoes (real butter, no dairy substitutes needed)</li>
+        <li>Broccoli, asparagus, or mixed veg</li>
+      </ul>
+    </div>
+    <div class="meal-block">
+      <div class="meal-label">Option B — Salmon + Sweet Potato + Salad <span class="tag tag-both">Both</span></div>
+      <ul>
+        <li>5oz (Ezra) / 3–4oz (Abram) salmon</li>
+        <li>Baked sweet potato with butter and cinnamon</li>
+        <li>Simple salad: romaine, cucumbers, tomatoes, olive oil + lemon</li>
+      </ul>
+    </div>
+    <div class="meal-block">
+      <div class="meal-label">Option C — Chicken Thighs + Rice + Roasted Veg <span class="tag tag-both">Both</span></div>
+      <ul>
+        <li>Bone-in chicken thighs, oven-roasted with garlic and herbs</li>
+        <li>White or jasmine rice</li>
+        <li>Roasted zucchini, peppers, or carrots</li>
+      </ul>
+    </div>
+    <div class="meal-block">
+      <div class="meal-label">Option D — Corn Tortilla Quesadillas (dinner version)</div>
+      <ul>
+        <li>Corn tortillas + shredded chicken or ground beef</li>
+        <li><span class="tag tag-abram">Abram</span> — cheese inside; <span class="tag tag-ezra">Ezra</span> — avocado + salsa instead</li>
+        <li>Side of black beans + rice or fruit</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Hydration Targets</div>
+    <p style="color:#888; font-size:0.82rem; margin-bottom:1rem;">Goal: half their body weight in ounces as a daily baseline, more on training days.</p>
+    <div class="hydration-row">
+      <div class="who" style="color:#a8c8f0;">Ezra</div>
+      <div class="hydration-bar-wrap"><div class="hydration-bar" style="width:80%;"></div></div>
+      <div class="hydration-num">~70–80 oz</div>
+    </div>
+    <div class="hydration-row">
+      <div class="who" style="color:#f0a8a8;">Abram</div>
+      <div class="hydration-bar-wrap"><div class="hydration-bar" style="width:62%;"></div></div>
+      <div class="hydration-num">~55–65 oz</div>
+    </div>
+    <div style="margin-top:1rem;">
+      <span class="pill-note">Water first — always</span>
+      <span class="pill-note">Coconut water post-workout</span>
+      <span class="pill-note">No sports drinks / no juice</span>
+      <span class="pill-note">Add pinch of sea salt on heavy sweat days</span>
+      <span class="pill-note">Herbal iced tea (unsweetened) is fine</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Foods to Keep Stocked</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; font-size:0.88rem; color:#ccc;">
+      <div>
+        <div style="color:var(--gold); font-size:0.75rem; text-transform:uppercase; letter-spacing:.1em; margin-bottom:0.4rem;">Proteins</div>
+        Ground beef · Sirloin/flank steak · Salmon · Chicken thighs/breasts · Eggs
+      </div>
+      <div>
+        <div style="color:var(--gold); font-size:0.75rem; text-transform:uppercase; letter-spacing:.1em; margin-bottom:0.4rem;">Carbs</div>
+        White/jasmine rice · Sweet potatoes · White potatoes · Corn tortillas · Oats (GF) · Fruit
+      </div>
+      <div style="margin-top:0.75rem;">
+        <div style="color:var(--gold); font-size:0.75rem; text-transform:uppercase; letter-spacing:.1em; margin-bottom:0.4rem;">Fats</div>
+        Avocado · Avocado oil · Olive oil · Almonds · Almond butter · Sunflower seeds
+      </div>
+      <div style="margin-top:0.75rem;">
+        <div style="color:var(--gold); font-size:0.75rem; text-transform:uppercase; letter-spacing:.1em; margin-bottom:0.4rem;">Extras</div>
+        Salsa · Garlic · Lime · Berries · Banana · Raw honey · Coconut water · Sea salt
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== WORKOUTS ===== -->
+<div id="workouts" class="section">
+  <div class="section-header">
+    <h2>Strength & Speed Workouts</h2>
+    <p>3 days/week · Upper / Lower / Full Body · 30–40 min including warmup · Ages 10 & 12</p>
+  </div>
+
+  <div class="card" style="border-left: 3px solid var(--gold);">
+    <div class="card-title">Warmup — Every Session (5–6 min)</div>
+    <div class="exercise-row"><span class="exercise-name">Speed ladder — two-feet in each box</span><span class="exercise-sets">2 passes</span></div>
+    <div class="exercise-row"><span class="exercise-name">High knees over hurdles or flat</span><span class="exercise-sets">20 sec</span></div>
+    <div class="exercise-row"><span class="exercise-name">Lateral shuffle — cone to cone</span><span class="exercise-sets">3x ea direction</span></div>
+    <div class="exercise-row"><span class="exercise-name">Arm circles + band pull-aparts</span><span class="exercise-sets">10 each</span></div>
+    <div class="exercise-row"><span class="exercise-name">Hip hinges / bodyweight RDL</span><span class="exercise-sets">10 reps</span></div>
+    <div class="exercise-row"><span class="exercise-name">Jump rope or jumping jacks</span><span class="exercise-sets">30 sec</span></div>
+  </div>
+
+  <div class="day-block">
+    <div class="day-header">
+      <h3>Day A — Upper Body</h3>
+      <span class="focus-tag">Push · Pull · Core</span>
+    </div>
+    <div class="day-content">
+      <div style="color:#888; font-size:0.78rem; margin-bottom:0.75rem;">After warmup — ~25 min of work</div>
+      <div class="exercise-row"><span class="exercise-name">DB Bench Press <span style="color:#666; font-size:0.8rem;">— 15lb Ezra / 10lb Abram</span></span><span class="exercise-sets">3 × 10</span></div>
+      <div class="exercise-row"><span class="exercise-name">DB Bent-Over Row</span><span class="exercise-sets">3 × 10 ea</span></div>
+      <div class="exercise-row"><span class="exercise-name">DB Shoulder Press</span><span class="exercise-sets">3 × 10</span></div>
+      <div class="exercise-row"><span class="exercise-name">Band Pull-Apart (rear delt / posture)</span><span class="exercise-sets">3 × 15</span></div>
+      <div class="exercise-row"><span class="exercise-name">Pushups (controlled, full range)</span><span class="exercise-sets">3 × max</span></div>
+      <div class="exercise-row"><span class="exercise-name">Plank Hold</span><span class="exercise-sets">3 × 30 sec</span></div>
+      <div class="exercise-row"><span class="exercise-name">Dead Bug</span><span class="exercise-sets">3 × 8 ea</span></div>
+      <div style="margin-top:0.75rem; font-size:0.8rem; color:#888; font-style:italic;">Finish: 2 rounds — 10 yd sprint × 4, full rest between</div>
+    </div>
+  </div>
+
+  <div class="day-block">
+    <div class="day-header">
+      <h3>Day B — Lower Body</h3>
+      <span class="focus-tag">Strength · Power · Speed</span>
+    </div>
+    <div class="day-content">
+      <div style="color:#888; font-size:0.78rem; margin-bottom:0.75rem;">After warmup — ~25 min of work</div>
+      <div class="exercise-row"><span class="exercise-name">Goblet Squat <span style="color:#666; font-size:0.8rem;">— 20lb Ezra / 15lb Abram</span></span><span class="exercise-sets">3 × 10</span></div>
+      <div class="exercise-row"><span class="exercise-name">Romanian Deadlift (RDL) <span style="color:#666; font-size:0.8rem;">— DB, light to moderate</span></span><span class="exercise-sets">3 × 10</span></div>
+      <div class="exercise-row"><span class="exercise-name">Reverse Lunge</span><span class="exercise-sets">3 × 8 ea</span></div>
+      <div class="exercise-row"><span class="exercise-name">Lateral Band Walk</span><span class="exercise-sets">3 × 12 ea</span></div>
+      <div class="exercise-row"><span class="exercise-name">Box Jump / Broad Jump <span style="color:#666; font-size:0.8rem;">— max effort</span></span><span class="exercise-sets">4 × 4</span></div>
+      <div class="exercise-row"><span class="exercise-name">Single-Leg Glute Bridge</span><span class="exercise-sets">3 × 10 ea</span></div>
+      <div class="exercise-row"><span class="exercise-name">Calf Raises <span style="color:#666; font-size:0.8rem;">— slow & controlled</span></span><span class="exercise-sets">3 × 15</span></div>
+      <div style="margin-top:0.75rem; font-size:0.8rem; color:#888; font-style:italic;">Finish: Speed ladder — 3 patterns × 3 passes, full rest</div>
+    </div>
+  </div>
+
+  <div class="day-block">
+    <div class="day-header">
+      <h3>Day C — Full Body</h3>
+      <span class="focus-tag">Athleticism · Conditioning</span>
+    </div>
+    <div class="day-content">
+      <div style="color:#888; font-size:0.78rem; margin-bottom:0.75rem;">After warmup — ~25 min of work</div>
+      <div class="exercise-row"><span class="exercise-name">DB Thruster (squat to press)</span><span class="exercise-sets">3 × 8</span></div>
+      <div class="exercise-row"><span class="exercise-name">Pulldown (pulley system) or Band Pull-Down</span><span class="exercise-sets">3 × 10</span></div>
+      <div class="exercise-row"><span class="exercise-name">Step-Up with DB <span style="color:#666; font-size:0.8rem;">— bench or box</span></span><span class="exercise-sets">3 × 8 ea</span></div>
+      <div class="exercise-row"><span class="exercise-name">Pushup to T-Rotation</span><span class="exercise-sets">3 × 6 ea</span></div>
+      <div class="exercise-row"><span class="exercise-name">Farmer Carry <span style="color:#666; font-size:0.8rem;">— 20lb ea Ezra / 15lb ea Abram</span></span><span class="exercise-sets">3 × 30 yd</span></div>
+      <div class="exercise-row"><span class="exercise-name">Medicine Ball Slam (or heavy ball squat) <span style="color:#666; font-size:0.8rem;">— or sub with burpee</span></span><span class="exercise-sets">3 × 8</span></div>
+      <div class="exercise-row"><span class="exercise-name">Lateral Hurdle Hops</span><span class="exercise-sets">3 × 8 ea</span></div>
+      <div style="margin-top:0.75rem; font-size:0.8rem; color:#888; font-style:italic;">Finish: Cone drill — 5-10-5 shuttle × 4 reps, full rest between</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem;">
+    <div class="card-title">Progression Notes</div>
+    <ul style="padding-left:1.1rem; color:#ccc; font-size:0.88rem;">
+      <li style="margin-bottom:.4rem;">Start at the lower end of listed weights — form first, always.</li>
+      <li style="margin-bottom:.4rem;">If they hit all reps cleanly for 2 sessions in a row → bump weight one step up.</li>
+      <li style="margin-bottom:.4rem;">Ezra: focus on posterior chain (hamstrings/glutes) for court explosion. Abram: focus on core stability and lateral power for linebacker movement.</li>
+      <li style="margin-bottom:.4rem;">No max effort barbell work yet — DB and bodyweight build the foundation safely at their ages.</li>
+      <li>Squat rack can be used for goblet squats with a DB or for box step-ups. Save barbell squats for when they're 13–14+.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===== SKILLS ===== -->
+<div id="skills" class="section">
+  <div class="section-header">
+    <h2>Skill Blocks</h2>
+    <p>4 days/week (Mon–Fri) · Can run together or separately · 45–60 min blocks</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="tag tag-ezra">Ezra</span> Basketball Skill Block — 45–60 min</div>
+
+    <div class="meal-block">
+      <div class="meal-label">Block 1 — Ballhandling (10 min)</div>
+      <ul>
+        <li>Stationary dribble series: low, high, crossover, behind back, between legs</li>
+        <li>Two-ball dribbling: alternating, simultaneous</li>
+        <li>Dr. Dish ball return cone dribble routes</li>
+      </ul>
+    </div>
+    <div class="meal-block">
+      <div class="meal-label">Block 2 — Shooting (20–25 min via Dr. Dish)</div>
+      <ul>
+        <li>Spot shooting: 5 spots × 10 makes each = 50 makes</li>
+        <li>Pull-up off dribble (elbow → wing)</li>
+        <li>Catch-and-shoot off Dish feed at game speed</li>
+        <li>Goal: 200 makes or 300 attempts — track daily</li>
+      </ul>
+    </div>
+    <div class="meal-block">
+      <div class="meal-label">Block 3 — PG Moves (10 min)</div>
+      <ul>
+        <li>Attack the rim: hesitation → drive, crossover → drive</li>
+        <li>Pick-and-roll reads (cones as defenders)</li>
+        <li>Floater: left and right hand</li>
+        <li>Pull-back dribble → reset</li>
+      </ul>
+    </div>
+    <div class="meal-block">
+      <div class="meal-label">Block 4 — Conditioning (5–10 min)</div>
+      <ul>
+        <li>Suicide runs or 3/4 court sprints × 4</li>
+        <li>Defensive slide — cone to cone × 4</li>
+        <li>Speed ladder — basketball-specific patterns</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="tag tag-abram">Abram</span> Football Skill Block — 45–60 min</div>
+
+    <div class="meal-block">
+      <div class="meal-label">Block 1 — Footwork (10 min)</div>
+      <ul>
+        <li>Speed ladder: linebacker shuffle, crossover, in-out</li>
+        <li>Cone drills: W-drill, T-drill, 5-10-5</li>
+        <li>Lateral explosion: cone to cone → break on signal</li>
+      </ul>
+    </div>
+    <div class="meal-block">
+      <div class="meal-label">Block 2 — LB Fundamentals (20 min)</div>
+      <ul>
+        <li>Read and react: Aaron holds cone as "ball carrier," Abram mirrors and breaks</li>
+        <li>Shuffle → downhill attack: 3 steps shuffle, drop step, full speed close</li>
+        <li>Backpedal → break on signal → sprint</li>
+        <li>Tackling form: leverage, drive through, no head-down contact</li>
+      </ul>
+    </div>
+    <div class="meal-block">
+      <div class="meal-label">Block 3 — Catching / Route Running (10 min)</div>
+      <ul>
+        <li>Aaron throws routes: out, slant, curl, seam</li>
+        <li>Hands catching — no body catches</li>
+        <li>YAC (yards after catch) — catch then sprint to cone</li>
+      </ul>
+    </div>
+    <div class="meal-block">
+      <div class="meal-label">Block 4 — Speed & Conditioning (10 min)</div>
+      <ul>
+        <li>10-yd burst starts × 6 (stance → explosion)</li>
+        <li>40-yd runs × 4 — focus on drive phase</li>
+        <li>Hurdle work: lateral, forward</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">When They Train Together</div>
+    <p style="color:#ccc; font-size:0.88rem; margin-bottom:0.75rem;">On shared days, run the conditioning and footwork portions together — both benefit from the same agility work. Then split for sport-specific skill blocks.</p>
+    <div class="exercise-row"><span class="exercise-name">Shared warmup + speed ladder</span><span class="exercise-sets">Together</span></div>
+    <div class="exercise-row"><span class="exercise-name">Cone drills / shuttle runs</span><span class="exercise-sets">Together</span></div>
+    <div class="exercise-row"><span class="exercise-name">Hurdle work</span><span class="exercise-sets">Together</span></div>
+    <div class="exercise-row"><span class="exercise-name">Sport-specific skill blocks</span><span class="exercise-sets">Split</span></div>
+  </div>
+</div>
+
+<!-- ===== SCHEDULE ===== -->
+<div id="schedule" class="section">
+  <div class="section-header">
+    <h2>Weekly Schedule</h2>
+    <p>Built around Abram's Tu/Th practice, Ezra's Mon/Wed gym + Sunday trainer, and shared home sessions</p>
+  </div>
+
+  <div class="week-grid">
+
+    <div class="day-row">
+      <div class="day-name">Mon</div>
+      <div class="day-activities">
+        <div class="activity"><span class="time">Morning</span><span>Breakfast + hydration start</span></div>
+        <div class="activity"><span class="time">9–10am</span><span><span class="tag tag-both">Both</span> Workout — Day A (Upper Body) at home</span></div>
+        <div class="activity"><span class="time">10:30–11:30</span><span><span class="tag tag-ezra">Ezra</span> Basketball skill block (Dr. Dish + driveway)</span></div>
+        <div class="activity"><span class="time">10:30–11:30</span><span><span class="tag tag-abram">Abram</span> Football skill block (cones/ladder/routes)</span></div>
+        <div class="activity"><span class="time">Afternoon</span><span><span class="tag tag-ezra">Ezra</span> Gym session (Mon reserved time)</span></div>
+      </div>
+    </div>
+
+    <div class="day-row">
+      <div class="day-name">Tue</div>
+      <div class="day-activities">
+        <div class="activity"><span class="time">Morning</span><span><span class="tag tag-both">Both</span> Skill block — shared warmup + split</span></div>
+        <div class="activity"><span class="time">Afternoon</span><span><span class="tag tag-abram">Abram</span> Football practice (Primetime Elite)</span></div>
+        <div class="activity"><span class="time">Evening</span><span>Recovery: sauna + hydration + full meal</span></div>
+      </div>
+    </div>
+
+    <div class="day-row">
+      <div class="day-name">Wed</div>
+      <div class="day-activities">
+        <div class="activity"><span class="time">Morning</span><span><span class="tag tag-both">Both</span> Workout — Day B (Lower Body) at home</span></div>
+        <div class="activity"><span class="time">Mid-morning</span><span><span class="tag tag-abram">Abram</span> Skill block — LB footwork + conditioning</span></div>
+        <div class="activity"><span class="time">Afternoon</span><span><span class="tag tag-ezra">Ezra</span> Gym session + Basketball trainer session</span></div>
+      </div>
+    </div>
+
+    <div class="day-row">
+      <div class="day-name">Thu</div>
+      <div class="day-activities">
+        <div class="activity"><span class="time">Morning</span><span><span class="tag tag-both">Both</span> Skill block — shared day, full block</span></div>
+        <div class="activity"><span class="time">Afternoon</span><span><span class="tag tag-abram">Abram</span> Football practice (Primetime Elite)</span></div>
+        <div class="activity"><span class="time">Evening</span><span>Recovery: cold plunge + good dinner + rest</span></div>
+      </div>
+    </div>
+
+    <div class="day-row">
+      <div class="day-name">Fri</div>
+      <div class="day-activities">
+        <div class="activity"><span class="time">Morning</span><span><span class="tag tag-both">Both</span> Workout — Day C (Full Body) at home</span></div>
+        <div class="activity"><span class="time">Mid-morning</span><span><span class="tag tag-both">Both</span> Skill block — keep it fun, competitive games</span></div>
+        <div class="activity"><span class="time">Afternoon</span><span>Free time / family / rest</span></div>
+      </div>
+    </div>
+
+    <div class="day-row">
+      <div class="day-name">Sat</div>
+      <div class="day-activities">
+        <div class="activity"><span class="time">All day</span><span>Rest / active recovery / family time</span></div>
+        <div class="activity"><span class="time">Optional</span><span>Light walk, swim, or shooting session — no structure</span></div>
+      </div>
+    </div>
+
+    <div class="day-row">
+      <div class="day-name">Sun</div>
+      <div class="day-activities">
+        <div class="activity"><span class="time">Morning</span><span>Church / family</span></div>
+        <div class="activity"><span class="time">Afternoon</span><span><span class="tag tag-ezra">Ezra</span> Trainer session — track + basketball (~2hr)</span></div>
+        <div class="activity"><span class="time">Afternoon</span><span><span class="tag tag-abram">Abram</span> Track training session</span></div>
+        <div class="activity"><span class="time">Evening</span><span>Full recovery meal + early bedtime</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="card" style="margin-top:1.25rem;">
+    <div class="card-title">Weekly Load Summary</div>
+    <div class="exercise-row"><span class="exercise-name">Strength/conditioning sessions</span><span class="exercise-sets">3x (M/W/F)</span></div>
+    <div class="exercise-row"><span class="exercise-name">Skill blocks</span><span class="exercise-sets">4x (M/Tu/Th/F)</span></div>
+    <div class="exercise-row"><span class="exercise-name">External practices (Abram)</span><span class="exercise-sets">2x Tu/Th</span></div>
+    <div class="exercise-row"><span class="exercise-name">External trainer (Ezra)</span><span class="exercise-sets">1–2x W/Su</span></div>
+    <div class="exercise-row"><span class="exercise-name">Full rest days</span><span class="exercise-sets">Sat (+ rotate as needed)</span></div>
+  </div>
+</div>
+
+<!-- ===== RECOVERY ===== -->
+<div id="recovery" class="section">
+  <div class="section-header">
+    <h2>Recovery Protocol</h2>
+    <p>You've got everything you need — cold plunge, sauna, good food. Use them.</p>
+  </div>
+
+  <div class="recovery-grid">
+    <div class="recovery-card">
+      <h4>❄️ Cold Plunge</h4>
+      <ul>
+        <li>Best after heavy lower body or full body days</li>
+        <li>Ezra: 2–3 min at 50–55°F</li>
+        <li>Abram: start at 1–2 min, build up</li>
+        <li>Don't use immediately before bed on hard training days</li>
+        <li>Good for inflammation, soreness, mental toughness</li>
+      </ul>
+    </div>
+    <div class="recovery-card">
+      <h4>🔥 Sauna</h4>
+      <ul>
+        <li>Best on rest days or post-cold plunge</li>
+        <li>10–15 min max at their ages</li>
+        <li>Hydrate before and after — water or coconut water</li>
+        <li>Great for muscle relaxation, circulation, sleep quality</li>
+        <li>Don't use when already dehydrated</li>
+      </ul>
+    </div>
+    <div class="recovery-card">
+      <h4>😴 Sleep</h4>
+      <ul>
+        <li>Ezra: 9–10 hours — non-negotiable for ASD + athlete</li>
+        <li>Abram: 9–10 hours</li>
+        <li>Consistent bedtime matters more than duration</li>
+        <li>No screens 30–45 min before bed</li>
+        <li>Sleep is when they actually grow and adapt</li>
+      </ul>
+    </div>
+    <div class="recovery-card">
+      <h4>🥩 Post-Workout Nutrition</h4>
+      <ul>
+        <li>Eat within 30–45 min after training</li>
+        <li>Protein + carb combo: eggs + rice, meat + potato, etc.</li>
+        <li>Coconut water for electrolyte replenishment</li>
+        <li>No skipping the post-workout meal — especially Sundays after the big training day</li>
+      </ul>
+    </div>
+    <div class="recovery-card">
+      <h4>🧘 Mobility / Soft Tissue</h4>
+      <ul>
+        <li>5 min stretch after every session — hips, hamstrings, calves, shoulders</li>
+        <li>Foam roll quads and IT band on lower body days</li>
+        <li>Hip flexor stretch daily — critical for both sports</li>
+        <li>Chest / shoulder opener for Abram after football contact</li>
+      </ul>
+    </div>
+    <div class="recovery-card">
+      <h4>📋 Signs to Back Off</h4>
+      <ul>
+        <li>Persistent joint pain (not muscle soreness) → rest 1–2 days</li>
+        <li>Mood / irritability drop → check sleep and food first</li>
+        <li>Flat effort in skill sessions → likely accumulated fatigue</li>
+        <li>Any re-stinger symptoms for Abram → stop immediately</li>
+        <li>When in doubt, rest wins over grinding</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1.25rem;">
+    <div class="card-title">Weekly Recovery Rhythm</div>
+    <div class="exercise-row"><span class="exercise-name">Cold plunge</span><span class="exercise-sets">Wed + Fri post-workout</span></div>
+    <div class="exercise-row"><span class="exercise-name">Sauna</span><span class="exercise-sets">Saturday (rest day)</span></div>
+    <div class="exercise-row"><span class="exercise-name">Post-workout stretch</span><span class="exercise-sets">Every session</span></div>
+    <div class="exercise-row"><span class="exercise-name">Full rest day</span><span class="exercise-sets">Saturday minimum</span></div>
+    <div class="exercise-row"><span class="exercise-name">Big recovery meal</span><span class="exercise-sets">Sunday evening after trainer</span></div>
+  </div>
+</div>
+
+<script>
+  function showTab(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
