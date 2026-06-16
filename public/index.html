@@ -516,16 +516,34 @@
     { word: "SHOW UP", type: "verb", def: "The most important thing you will do today" }
   ];
 
-  const s = SAYINGS[Math.floor(Math.random() * SAYINGS.length)];
-  document.getElementById('splashWord').textContent = s.word;
-  document.getElementById('splashType').textContent = s.type;
-  document.getElementById('splashDef').textContent = s.def;
+  const splash = document.getElementById('splash');
 
-  setTimeout(() => {
-    const splash = document.getElementById('splash');
-    splash.classList.add('fade-out');
-    setTimeout(() => splash.classList.add('hidden'), 600);
-  }, 6500);
+  // Show splash only if it hasn't shown in the last 30 seconds.
+  // This survives page-to-page navigation but re-triggers on a true fresh app open.
+  const lastShown = localStorage.getItem('splashLastShown');
+  const now = Date.now();
+  const IDLE_WINDOW = 30 * 60 * 1000; // 30 minutes
+
+  if (lastShown && (now - parseInt(lastShown)) < IDLE_WINDOW) {
+    splash.classList.add('hidden');
+  } else {
+    localStorage.setItem('splashLastShown', now.toString());
+    const s = SAYINGS[Math.floor(Math.random() * SAYINGS.length)];
+    document.getElementById('splashWord').textContent = s.word;
+    document.getElementById('splashType').textContent = s.type;
+    document.getElementById('splashDef').textContent = s.def;
+
+    setTimeout(() => {
+      splash.classList.add('fade-out');
+      setTimeout(() => splash.classList.add('hidden'), 600);
+    }, 6500);
+  }
+
+  // Keep the timestamp fresh while actively using the app so navigating
+  // between pages never re-triggers the splash.
+  document.addEventListener('click', () => {
+    localStorage.setItem('splashLastShown', Date.now().toString());
+  });
 </script>
 
 </body>
