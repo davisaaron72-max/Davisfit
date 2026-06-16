@@ -254,9 +254,89 @@
     header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
     .header-date { text-align: left; }
   }
+
+  /* SPLASH SCREEN */
+  #splash {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #0a0a0a;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    transition: opacity 0.6s ease;
+  }
+  #splash.fade-out { opacity: 0; pointer-events: none; }
+  #splash.hidden { display: none; }
+  .splash-line-top {
+    width: 60px;
+    height: 3px;
+    background: #c9a84c;
+    margin-bottom: 2rem;
+  }
+  .splash-word {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(3rem, 12vw, 5.5rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #f0ede6;
+    text-align: center;
+    line-height: 1;
+    margin-bottom: 0.75rem;
+  }
+  .splash-type {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #c9a84c;
+    margin-bottom: 1rem;
+  }
+  .splash-line-bottom {
+    width: 60px;
+    height: 3px;
+    background: #c9a84c;
+    margin-bottom: 1.5rem;
+  }
+  .splash-def {
+    font-family: 'Barlow', sans-serif;
+    font-size: clamp(0.8rem, 3vw, 1rem);
+    color: #888;
+    text-align: center;
+    max-width: 300px;
+    line-height: 1.5;
+    font-style: italic;
+  }
+  .splash-logo {
+    position: absolute;
+    bottom: 2.5rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #333;
+  }
+  .splash-logo span { color: #c9a84c; }
+
 </style>
 </head>
 <body>
+
+<div id="splash">
+  <div class="splash-line-top"></div>
+  <div class="splash-word" id="splashWord"></div>
+  <div class="splash-type" id="splashType"></div>
+  <div class="splash-line-bottom"></div>
+  <div class="splash-def" id="splashDef"></div>
+  <div class="splash-logo">DAVIS<span>FIT</span></div>
+</div>
+
 
 <header>
   <div>
@@ -417,6 +497,35 @@
   const d = new Date();
   const opts = { month: 'long', day: 'numeric', year: 'numeric' };
   document.getElementById('current-date').textContent = d.toLocaleDateString('en-US', opts);
+</script>
+
+
+<script>
+  const SAYINGS = [
+    { word: "GRIND", type: "verb", def: "To perform repetitive tasks over and over in order to attain a goal" },
+    { word: "DISCIPLINE", type: "noun", def: "Doing what needs to be done, even when you don't feel like it" },
+    { word: "EXECUTE", type: "verb", def: "To put a plan in motion and make things happen today" },
+    { word: "SACRIFICE", type: "noun", def: "Comes before success, even in the dictionary" },
+    { word: "GRIT", type: "noun", def: "Strength of character, perseverance and passion for long-term goals" },
+    { word: "STANDARD", type: "noun", def: "The level you hold yourself to when no one is watching" },
+    { word: "EARNED", type: "adjective", def: "Nothing given. Nothing borrowed. Everything built." },
+    { word: "COMPETE", type: "verb", def: "To show up every day and refuse to be outworked" },
+    { word: "LEGACY", type: "noun", def: "What remains when the work is done and the season is over" },
+    { word: "CONQUER", type: "verb", def: "To forcefully overcome and take control of all weaknesses and excuses" },
+    { word: "COMMIT", type: "verb", def: "To dedicate fully, with no exit and no excuse" },
+    { word: "SHOW UP", type: "verb", def: "The most important thing you will do today" }
+  ];
+
+  const s = SAYINGS[Math.floor(Math.random() * SAYINGS.length)];
+  document.getElementById('splashWord').textContent = s.word;
+  document.getElementById('splashType').textContent = s.type;
+  document.getElementById('splashDef').textContent = s.def;
+
+  setTimeout(() => {
+    const splash = document.getElementById('splash');
+    splash.classList.add('fade-out');
+    setTimeout(() => splash.classList.add('hidden'), 600);
+  }, 3500);
 </script>
 
 </body>
