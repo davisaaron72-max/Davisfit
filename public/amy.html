@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amy — DavisFit</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="DavisFit">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#c9a84c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --black: #0a0a0a; --surface: #141414; --surface2: #1e1e1e;
+    --border: #2a2a2a; --gold: #c9a84c; --off-white: #f0ede6;
+    --mid: #888; --amy: #9b59b6; --amy-dim: #5a3a6b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--black); color: var(--off-white); font-family: 'Barlow', sans-serif; min-height: 100vh; }
+
+  /* SPLASH */
+  #splash { position: fixed; top:0; left:0; width:100%; height:100%; background:#0a0a0a; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem; transition:opacity 0.6s ease; }
+  #splash.fade-out { opacity:0; pointer-events:none; }
+  #splash.hidden { display:none; }
+  .splash-line { width:60px; height:3px; background:var(--amy); margin:1.5rem 0; }
+  .splash-word { font-family:'Barlow Condensed',sans-serif; font-size:clamp(3rem,12vw,5.5rem); font-weight:900; text-transform:uppercase; letter-spacing:0.08em; color:var(--off-white); text-align:center; line-height:1; }
+  .splash-type { font-family:'Barlow Condensed',sans-serif; font-size:0.75rem; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:var(--amy); margin-top:0.5rem; }
+  .splash-def { font-family:'Barlow',sans-serif; font-size:clamp(0.8rem,3vw,1rem); color:#888; text-align:center; max-width:300px; line-height:1.5; font-style:italic; margin-top:1rem; }
+  .splash-logo { position:absolute; bottom:2.5rem; font-family:'Barlow Condensed',sans-serif; font-size:0.75rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#333; }
+  .splash-logo span { color:var(--amy); }
+
+  .back-nav { background:var(--surface); border-bottom:1px solid var(--border); padding:0.75rem 1.5rem; }
+  .back-nav a { font-family:'Barlow Condensed',sans-serif; font-size:0.78rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); text-decoration:none; }
+
+  header { padding:2rem 1.5rem 1.5rem; border-bottom:2px solid var(--amy); max-width:900px; margin:0 auto; }
+  header .eyebrow { font-family:'Barlow Condensed',sans-serif; font-size:0.72rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--amy); margin-bottom:0.5rem; font-weight:600; }
+  header h1 { font-family:'Barlow Condensed',sans-serif; font-size:2.8rem; font-weight:900; text-transform:uppercase; letter-spacing:0.05em; line-height:1; }
+  header h1 span { color:var(--amy); }
+  header p { color:var(--mid); font-size:0.88rem; margin-top:0.5rem; }
+
+  nav { display:flex; background:#111; border-bottom:1px solid var(--border); overflow-x:auto; }
+  nav button { flex:1; min-width:90px; padding:0.9rem 0.5rem; background:none; border:none; border-bottom:2px solid transparent; color:var(--mid); font-family:'Barlow Condensed',sans-serif; font-size:0.8rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+  nav button:hover { color:var(--off-white); }
+  nav button.active { color:var(--amy); border-bottom-color:var(--amy); }
+
+  .section { display:none; padding:2rem 1.5rem 4rem; max-width:900px; margin:0 auto; }
+  .section.active { display:block; }
+
+  .section-header { margin-bottom:1.75rem; }
+  .section-header h2 { font-family:'Barlow Condensed',sans-serif; font-size:1.8rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; }
+  .section-header p { color:var(--mid); font-size:0.88rem; margin-top:0.3rem; }
+
+  .card { background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:1.5rem; margin-bottom:1.1rem; }
+  .card-title { font-family:'Barlow Condensed',sans-serif; font-size:0.7rem; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--amy); margin-bottom:1rem; padding-bottom:0.6rem; border-bottom:1px solid var(--border); }
+
+  .encourage { background:var(--surface2); border-left:3px solid var(--amy); border-radius:0 4px 4px 0; padding:1rem 1.25rem; margin-bottom:1rem; font-size:0.88rem; color:#ccc; line-height:1.6; }
+
+  .eds-note { background:#1a1000; border-left:3px solid var(--gold); padding:0.6rem 0.9rem; margin-bottom:0.75rem; font-size:0.78rem; color:#ccc; border-radius:0 3px 3px 0; }
+  .eds-note strong { color:var(--gold); }
+
+  .workout-block { background:var(--surface); border:1px solid var(--border); border-radius:4px; overflow:hidden; margin-bottom:1rem; }
+  .workout-header { background:var(--surface2); padding:0.9rem 1.25rem; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); }
+  .workout-header h3 { font-family:'Barlow Condensed',sans-serif; font-size:1.1rem; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; color:var(--amy); }
+  .focus { font-family:'Barlow Condensed',sans-serif; font-size:0.72rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--mid); }
+  .workout-body { padding:1rem 1.25rem; }
+
+  .ex-row { display:flex; justify-content:space-between; align-items:flex-start; padding:0.6rem 0; border-bottom:1px solid var(--border); gap:1rem; }
+  .ex-row:last-child { border-bottom:none; }
+  .ex-name { color:var(--off-white); font-size:0.9rem; flex:2; }
+  .ex-note { color:var(--mid); font-size:0.78rem; display:block; margin-top:0.15rem; }
+  .ex-sets { color:var(--amy); font-weight:600; font-size:0.88rem; flex-shrink:0; text-align:right; font-family:'Barlow Condensed',sans-serif; }
+
+  .log-toggle { background:none; border:1px solid #333; border-radius:3px; color:var(--amy); font-family:'Barlow Condensed',sans-serif; font-size:0.65rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:0.2rem 0.5rem; cursor:pointer; margin-left:0.5rem; transition:all 0.15s; vertical-align:middle; }
+  .log-toggle:hover { background:#1a0d1a; border-color:var(--amy); }
+  .inline-log { display:none; background:#111; border-top:1px solid var(--border); padding:0.75rem 1rem; }
+  .inline-log.open { display:block; }
+  .log-col-headers { display:grid; grid-template-columns:28px 1fr 1fr auto; gap:0.4rem; margin-bottom:0.3rem; }
+  .log-col-header { font-family:'Barlow Condensed',sans-serif; font-size:0.6rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--mid); text-align:center; }
+  .log-set-row { display:grid; grid-template-columns:28px 1fr 1fr auto; gap:0.4rem; align-items:center; margin-bottom:0.4rem; }
+  .log-set-num { font-family:'Barlow Condensed',sans-serif; font-weight:700; color:var(--amy); font-size:0.8rem; text-align:center; }
+  .log-set-input { background:var(--surface2); border:1px solid var(--border); border-radius:3px; padding:0.4rem 0.5rem; color:var(--off-white); font-size:0.85rem; text-align:center; width:100%; outline:none; }
+  .log-set-input:focus { border-color:var(--amy); }
+  .log-set-input::placeholder { color:#444; font-size:0.72rem; }
+  .log-set-check { background:var(--surface2); border:1px solid #333; border-radius:3px; width:28px; height:28px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.8rem; transition:all 0.15s; flex-shrink:0; }
+  .log-set-check.done { background:var(--amy); border-color:var(--amy); color:#fff; }
+
+  .submit-btn { width:100%; background:var(--amy-dim); border:none; border-radius:4px; padding:1rem; color:var(--off-white); font-family:'Barlow Condensed',sans-serif; font-size:1rem; font-weight:800; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; margin-top:1rem; transition:background 0.15s; }
+  .submit-btn:hover { background:var(--amy); color:#000; }
+  .submit-btn:disabled { background:#333; color:#666; cursor:not-allowed; }
+
+  .toast { position:fixed; bottom:2rem; left:50%; transform:translateX(-50%); background:var(--amy-dim); color:white; padding:0.75rem 1.5rem; border-radius:4px; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:0.9rem; letter-spacing:0.1em; text-transform:uppercase; opacity:0; transition:opacity 0.3s; pointer-events:none; z-index:999; white-space:nowrap; }
+  .toast.show { opacity:1; }
+
+  .cardio-option { background:var(--surface2); border:1px solid var(--border); border-radius:4px; padding:1rem 1.25rem; margin-bottom:0.75rem; }
+  .cardio-option h4 { font-family:'Barlow Condensed',sans-serif; font-size:0.95rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--amy); margin-bottom:0.4rem; }
+  .cardio-option p { font-size:0.85rem; color:#ccc; line-height:1.5; }
+
+  .week-row { display:grid; grid-template-columns:90px 1fr; background:var(--surface); border:1px solid var(--border); border-radius:4px; overflow:hidden; margin-bottom:0.5rem; }
+  .week-day { background:var(--amy-dim); color:var(--off-white); padding:0.85rem 0.75rem; font-family:'Barlow Condensed',sans-serif; font-size:0.8rem; font-weight:700; text-transform:uppercase; display:flex; align-items:center; justify-content:center; text-align:center; }
+  .week-day.rest { background:#1a1a1a; color:var(--mid); }
+  .week-activity { padding:0.85rem 1.1rem; font-size:0.88rem; color:#ccc; display:flex; align-items:center; }
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="splash-line"></div>
+  <div class="splash-word" id="splashWord"></div>
+  <div class="splash-type" id="splashType"></div>
+  <div class="splash-line"></div>
+  <div class="splash-def" id="splashDef"></div>
+  <div class="splash-logo">DAVIS<span>FIT</span></div>
+</div>
+
+<div class="back-nav"><a href="index.html">← Back to DavisFit</a></div>
+
+<header>
+  <div class="eyebrow">Summer 2026 · Personal Plan</div>
+  <h1>Amy's <span>Plan</span></h1>
+  <p>3 days a week · Strength & Tone · EDS + POTS safe · 45 min sessions</p>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('workouts')">💪 Workouts</button>
+  <button onclick="showTab('cardio')">🚴 Cardio</button>
+  <button onclick="showTab('schedule')">📅 Schedule</button>
+  <button onclick="showTab('notes')">📋 Notes</button>
+</nav>
+
+<!-- WORKOUTS -->
+<div id="workouts" class="section active">
+  <div class="section-header">
+    <h2>Workout Days</h2>
+    <p>Mon · Wed · Fri · 45 min · Strength focused · EDS + POTS safe</p>
+  </div>
+
+  <div class="encourage">
+    Starting fresh after a few years — that's perfectly fine. These workouts build muscle definition across legs, arms, back, and shoulders. Every exercise is EDS-safe: slow tempo (2 up / 1 pause / 3 down), no end-range loading, no locking joints. Muscle burn is good. Joint pain means stop.
+  </div>
+
+  <!-- DAY 1 -->
+  <div class="workout-block">
+    <div class="workout-header">
+      <h3>Day 1 — Upper Body</h3>
+      <span class="focus">Back · Shoulders · Arms</span>
+    </div>
+    <div class="workout-body">
+      <div class="eds-note"><strong>EDS + POTS:</strong> If doing cardio first, rest 5 min before lifting. Keep movements controlled — no momentum. If lightheaded, sit down immediately.</div>
+
+      <div class="ex-row">
+        <span class="ex-name">Seated DB Row <button class="log-toggle" onclick="toggleLog('d1-row')">+ Log</button><span class="ex-note">10lb start — pull elbow to hip, squeeze 1 sec, 3 sec return. Can use cable at Planet Fitness.</span></span>
+        <span class="ex-sets">3 × 10–12</span>
+      </div>
+      <div class="inline-log" id="log-d1-row">
+        <div class="log-col-headers"><div class="log-col-header"></div><div class="log-col-header">Weight</div><div class="log-col-header">Reps</div><div class="log-col-header">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">1</div><input type="number" class="log-set-input" placeholder="lbs" id="d1-row-w1"><input type="number" class="log-set-input" placeholder="reps" id="d1-row-r1"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">2</div><input type="number" class="log-set-input" placeholder="lbs" id="d1-row-w2"><input type="number" class="log-set-input" placeholder="reps" id="d1-row-r2"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">3</div><input type="number" class="log-set-input" placeholder="lbs" id="d1-row-w3"><input type="number" class="log-set-input" placeholder="reps" id="d1-row-r3"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+      </div>
+
+      <div class="ex-row">
+        <span class="ex-name">DB Lateral Raise <button class="log-toggle" onclick="toggleLog('d1-lateral')">+ Log</button><span class="ex-note">5lb start — slow raise to shoulder height only, 3 sec lower. No shrugging.</span></span>
+        <span class="ex-sets">3 × 12</span>
+      </div>
+      <div class="inline-log" id="log-d1-lateral">
+        <div class="log-col-headers"><div class="log-col-header"></div><div class="log-col-header">Weight</div><div class="log-col-header">Reps</div><div class="log-col-header">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">1</div><input type="number" class="log-set-input" placeholder="lbs" id="d1-lateral-w1"><input type="number" class="log-set-input" placeholder="reps" id="d1-lateral-r1"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">2</div><input type="number" class="log-set-input" placeholder="lbs" id="d1-lateral-w2"><input type="number" class="log-set-input" placeholder="reps" id="d1-lateral-r2"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">3</div><input type="number" class="log-set-input" placeholder="lbs" id="d1-lateral-w3"><input type="number" class="log-set-input" placeholder="reps" id="d1-lateral-r3"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+      </div>
+
+      <div class="ex-row">
+        <span class="ex-name">DB Bicep Curl <button class="log-toggle" onclick="toggleLog('d1-curl')">+ Log</button><span class="ex-note">8lb start — supinate at top, 3 sec lower, elbows stay at sides.</span></span>
+        <span class="ex-sets">3 × 12</span>
+      </div>
+      <div class="inline-log" id="log-d1-curl">
+        <div class="log-col-headers"><div class="log-col-header"></div><div class="log-col-header">Weight</div><div class="log-col-header">Reps</div><div class="log-col-header">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">1</div><input type="number" class="log-set-input" placeholder="lbs" id="d1-curl-w1"><input type="number" class="log-set-input" placeholder="reps" id="d1-curl-r1"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">2</div><input type="number" class="log-set-input" placeholder="lbs" id="d1-curl-w2"><input type="number" class="log-set-input" placeholder="reps" id="d1-curl-r2"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">3</div><input type="number" class="log-set-input" placeholder="lbs" id="d1-curl-w3"><input type="number" class="log-set-input" placeholder="reps" id="d1-curl-r3"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+      </div>
+
+      <div class="ex-row">
+        <span class="ex-name">Reverse DB Fly <button class="log-toggle" onclick="toggleLog('d1-fly')">+ Log</button><span class="ex-note">5lb — rear delts and posture. Hinge slightly, arms arc out wide, slow eccentric.</span></span>
+        <span class="ex-sets">3 × 12</span>
+      </div>
+      <div class="inline-log" id="log-d1-fly">
+        <div class="log-col-headers"><div class="log-col-header"></div><div class="log-col-header">Weight</div><div class="log-col-header">Reps</div><div class="log-col-header">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">1</div><input type="number" class="log-set-input" placeholder="lbs" id="d1-fly-w1"><input type="number" class="log-set-input" placeholder="reps" id="d1-fly-r1"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">2</div><input type="number" class="log-set-input" placeholder="lbs" id="d1-fly-w2"><input type="number" class="log-set-input" placeholder="reps" id="d1-fly-r2"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">3</div><input type="number" class="log-set-input" placeholder="lbs" id="d1-fly-w3"><input type="number" class="log-set-input" placeholder="reps" id="d1-fly-r3"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+      </div>
+
+      <div class="ex-row">
+        <span class="ex-name">Tricep Pushdown (band or cable) <button class="log-toggle" onclick="toggleLog('d1-tricep')">+ Log</button><span class="ex-note">Light resistance — elbows pinned at sides, full extension but soft lock.</span></span>
+        <span class="ex-sets">3 × 12</span>
+      </div>
+      <div class="inline-log" id="log-d1-tricep">
+        <div class="log-col-headers"><div class="log-col-header"></div><div class="log-col-header">Weight</div><div class="log-col-header">Reps</div><div class="log-col-header">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">1</div><input type="number" class="log-set-input" placeholder="lbs" id="d1-tricep-w1"><input type="number" class="log-set-input" placeholder="reps" id="d1-tricep-r1"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">2</div><input type="number" class="log-set-input" placeholder="lbs" id="d1-tricep-w2"><input type="number" class="log-set-input" placeholder="reps" id="d1-tricep-r2"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">3</div><input type="number" class="log-set-input" placeholder="lbs" id="d1-tricep-w3"><input type="number" class="log-set-input" placeholder="reps" id="d1-tricep-r3"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+      </div>
+
+      <div class="ex-row">
+        <span class="ex-name">Forearm Plank <button class="log-toggle" onclick="toggleLog('d1-plank')">+ Log</button><span class="ex-note">Hips level, core braced. Enter seconds in the reps field.</span></span>
+        <span class="ex-sets">2 × 20–30 sec</span>
+      </div>
+      <div class="inline-log" id="log-d1-plank">
+        <div class="log-col-headers"><div class="log-col-header"></div><div class="log-col-header">Weight</div><div class="log-col-header">Secs</div><div class="log-col-header">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">1</div><input type="number" class="log-set-input" placeholder="0" id="d1-plank-w1"><input type="number" class="log-set-input" placeholder="secs" id="d1-plank-r1"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">2</div><input type="number" class="log-set-input" placeholder="0" id="d1-plank-w2"><input type="number" class="log-set-input" placeholder="secs" id="d1-plank-r2"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+      </div>
+    </div>
+  </div>
+  <button class="submit-btn" onclick="submitDay('monday')" id="submit-monday">Submit Day 1 Workout</button>
+
+  <!-- DAY 2 -->
+  <div class="workout-block" style="margin-top:1.5rem;">
+    <div class="workout-header">
+      <h3>Day 2 — Lower Body</h3>
+      <span class="focus">Legs · Glutes · Core</span>
+    </div>
+    <div class="workout-body">
+      <div class="eds-note"><strong>EDS + POTS:</strong> No deep squats — stop at parallel. No locking knees. Drive through heels. Glutes do the work, not the joints.</div>
+
+      <div class="ex-row">
+        <span class="ex-name">Goblet Squat <button class="log-toggle" onclick="toggleLog('d2-squat')">+ Log</button><span class="ex-note">10–15lb KB or DB — sit back, knees track over toes, stop at parallel, 3 sec down.</span></span>
+        <span class="ex-sets">3 × 12</span>
+      </div>
+      <div class="inline-log" id="log-d2-squat">
+        <div class="log-col-headers"><div class="log-col-header"></div><div class="log-col-header">Weight</div><div class="log-col-header">Reps</div><div class="log-col-header">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">1</div><input type="number" class="log-set-input" placeholder="lbs" id="d2-squat-w1"><input type="number" class="log-set-input" placeholder="reps" id="d2-squat-r1"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">2</div><input type="number" class="log-set-input" placeholder="lbs" id="d2-squat-w2"><input type="number" class="log-set-input" placeholder="reps" id="d2-squat-r2"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">3</div><input type="number" class="log-set-input" placeholder="lbs" id="d2-squat-w3"><input type="number" class="log-set-input" placeholder="reps" id="d2-squat-r3"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+      </div>
+
+      <div class="ex-row">
+        <span class="ex-name">Glute Bridge (floor or elevated) <button class="log-toggle" onclick="toggleLog('d2-bridge')">+ Log</button><span class="ex-note">Hold 2 sec at top, drive through heels, no hyperextension. Add DB on hips when ready.</span></span>
+        <span class="ex-sets">3 × 15</span>
+      </div>
+      <div class="inline-log" id="log-d2-bridge">
+        <div class="log-col-headers"><div class="log-col-header"></div><div class="log-col-header">Weight</div><div class="log-col-header">Reps</div><div class="log-col-header">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">1</div><input type="number" class="log-set-input" placeholder="lbs" id="d2-bridge-w1"><input type="number" class="log-set-input" placeholder="reps" id="d2-bridge-r1"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">2</div><input type="number" class="log-set-input" placeholder="lbs" id="d2-bridge-w2"><input type="number" class="log-set-input" placeholder="reps" id="d2-bridge-r2"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">3</div><input type="number" class="log-set-input" placeholder="lbs" id="d2-bridge-w3"><input type="number" class="log-set-input" placeholder="reps" id="d2-bridge-r3"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+      </div>
+
+      <div class="ex-row">
+        <span class="ex-name">Reverse Lunge (or split squat) <button class="log-toggle" onclick="toggleLog('d2-lunge')">+ Log</button><span class="ex-note">BW or 5–8lb DBs — step back, front knee tracks over toes, controlled descent.</span></span>
+        <span class="ex-sets">3 × 10 ea</span>
+      </div>
+      <div class="inline-log" id="log-d2-lunge">
+        <div class="log-col-headers"><div class="log-col-header"></div><div class="log-col-header">Weight</div><div class="log-col-header">Reps</div><div class="log-col-header">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">1</div><input type="number" class="log-set-input" placeholder="lbs" id="d2-lunge-w1"><input type="number" class="log-set-input" placeholder="reps" id="d2-lunge-r1"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">2</div><input type="number" class="log-set-input" placeholder="lbs" id="d2-lunge-w2"><input type="number" class="log-set-input" placeholder="reps" id="d2-lunge-r2"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">3</div><input type="number" class="log-set-input" placeholder="lbs" id="d2-lunge-w3"><input type="number" class="log-set-input" placeholder="reps" id="d2-lunge-r3"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+      </div>
+
+      <div class="ex-row">
+        <span class="ex-name">Romanian Deadlift — light <button class="log-toggle" onclick="toggleLog('d2-rdl')">+ Log</button><span class="ex-note">10–15lb DBs — hinge at hips, soft knees, feel hamstrings load. Stop BEFORE full stretch.</span></span>
+        <span class="ex-sets">3 × 10</span>
+      </div>
+      <div class="inline-log" id="log-d2-rdl">
+        <div class="log-col-headers"><div class="log-col-header"></div><div class="log-col-header">Weight</div><div class="log-col-header">Reps</div><div class="log-col-header">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">1</div><input type="number" class="log-set-input" placeholder="lbs" id="d2-rdl-w1"><input type="number" class="log-set-input" placeholder="reps" id="d2-rdl-r1"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">2</div><input type="number" class="log-set-input" placeholder="lbs" id="d2-rdl-w2"><input type="number" class="log-set-input" placeholder="reps" id="d2-rdl-r2"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">3</div><input type="number" class="log-set-input" placeholder="lbs" id="d2-rdl-w3"><input type="number" class="log-set-input" placeholder="reps" id="d2-rdl-r3"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+      </div>
+
+      <div class="ex-row">
+        <span class="ex-name">Lateral Band Walk <button class="log-toggle" onclick="toggleLog('d2-band')">+ Log</button><span class="ex-note">Band above knees — small controlled steps, hips level. Hip stabilizer essential for EDS.</span></span>
+        <span class="ex-sets">2 × 12 ea</span>
+      </div>
+      <div class="inline-log" id="log-d2-band">
+        <div class="log-col-headers"><div class="log-col-header"></div><div class="log-col-header">Weight</div><div class="log-col-header">Reps</div><div class="log-col-header">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">1</div><input type="number" class="log-set-input" placeholder="lbs" id="d2-band-w1"><input type="number" class="log-set-input" placeholder="reps" id="d2-band-r1"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">2</div><input type="number" class="log-set-input" placeholder="lbs" id="d2-band-w2"><input type="number" class="log-set-input" placeholder="reps" id="d2-band-r2"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+      </div>
+
+      <div class="ex-row">
+        <span class="ex-name">Bird Dog <button class="log-toggle" onclick="toggleLog('d2-birddog')">+ Log</button><span class="ex-note">On all fours — opposite arm/leg, hold 2 sec. Spine neutral. Core stability king.</span></span>
+        <span class="ex-sets">2 × 10 ea</span>
+      </div>
+      <div class="inline-log" id="log-d2-birddog">
+        <div class="log-col-headers"><div class="log-col-header"></div><div class="log-col-header">Weight</div><div class="log-col-header">Reps</div><div class="log-col-header">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">1</div><input type="number" class="log-set-input" placeholder="lbs" id="d2-birddog-w1"><input type="number" class="log-set-input" placeholder="reps" id="d2-birddog-r1"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">2</div><input type="number" class="log-set-input" placeholder="lbs" id="d2-birddog-w2"><input type="number" class="log-set-input" placeholder="reps" id="d2-birddog-r2"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+      </div>
+    </div>
+  </div>
+  <button class="submit-btn" onclick="submitDay('wednesday')" id="submit-wednesday">Submit Day 2 Workout</button>
+
+  <!-- DAY 3 -->
+  <div class="workout-block" style="margin-top:1.5rem;">
+    <div class="workout-header">
+      <h3>Day 3 — Full Body</h3>
+      <span class="focus">Integration · Tone · Definition</span>
+    </div>
+    <div class="workout-body">
+      <div class="eds-note"><strong>EDS + POTS:</strong> Friday is integration day. Control over speed always. If energy is low from the week, reduce reps — never skip entirely.</div>
+
+      <div class="ex-row">
+        <span class="ex-name">DB Shoulder Press <button class="log-toggle" onclick="toggleLog('d3-press')">+ Log</button><span class="ex-note">8–10lb — press to just above eye level (not full lockout), 3 sec lower.</span></span>
+        <span class="ex-sets">3 × 10–12</span>
+      </div>
+      <div class="inline-log" id="log-d3-press">
+        <div class="log-col-headers"><div class="log-col-header"></div><div class="log-col-header">Weight</div><div class="log-col-header">Reps</div><div class="log-col-header">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">1</div><input type="number" class="log-set-input" placeholder="lbs" id="d3-press-w1"><input type="number" class="log-set-input" placeholder="reps" id="d3-press-r1"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">2</div><input type="number" class="log-set-input" placeholder="lbs" id="d3-press-w2"><input type="number" class="log-set-input" placeholder="reps" id="d3-press-r2"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">3</div><input type="number" class="log-set-input" placeholder="lbs" id="d3-press-w3"><input type="number" class="log-set-input" placeholder="reps" id="d3-press-r3"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+      </div>
+
+      <div class="ex-row">
+        <span class="ex-name">Lat Pulldown (machine or band) <button class="log-toggle" onclick="toggleLog('d3-pulldown')">+ Log</button><span class="ex-note">Pull to upper chest, elbows drive down. Great back width builder. Planet Fitness has machines.</span></span>
+        <span class="ex-sets">3 × 10–12</span>
+      </div>
+      <div class="inline-log" id="log-d3-pulldown">
+        <div class="log-col-headers"><div class="log-col-header"></div><div class="log-col-header">Weight</div><div class="log-col-header">Reps</div><div class="log-col-header">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">1</div><input type="number" class="log-set-input" placeholder="lbs" id="d3-pulldown-w1"><input type="number" class="log-set-input" placeholder="reps" id="d3-pulldown-r1"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">2</div><input type="number" class="log-set-input" placeholder="lbs" id="d3-pulldown-w2"><input type="number" class="log-set-input" placeholder="reps" id="d3-pulldown-r2"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">3</div><input type="number" class="log-set-input" placeholder="lbs" id="d3-pulldown-w3"><input type="number" class="log-set-input" placeholder="reps" id="d3-pulldown-r3"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+      </div>
+
+      <div class="ex-row">
+        <span class="ex-name">Step-Up (low box or stair) <button class="log-toggle" onclick="toggleLog('d3-stepup')">+ Log</button><span class="ex-note">Drive through heel of lead foot. No jumping. 5–10lb DBs optional. Builds single-leg strength safely.</span></span>
+        <span class="ex-sets">3 × 10 ea</span>
+      </div>
+      <div class="inline-log" id="log-d3-stepup">
+        <div class="log-col-headers"><div class="log-col-header"></div><div class="log-col-header">Weight</div><div class="log-col-header">Reps</div><div class="log-col-header">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">1</div><input type="number" class="log-set-input" placeholder="lbs" id="d3-stepup-w1"><input type="number" class="log-set-input" placeholder="reps" id="d3-stepup-r1"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">2</div><input type="number" class="log-set-input" placeholder="lbs" id="d3-stepup-w2"><input type="number" class="log-set-input" placeholder="reps" id="d3-stepup-r2"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">3</div><input type="number" class="log-set-input" placeholder="lbs" id="d3-stepup-w3"><input type="number" class="log-set-input" placeholder="reps" id="d3-stepup-r3"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+      </div>
+
+      <div class="ex-row">
+        <span class="ex-name">Farmer Carry <button class="log-toggle" onclick="toggleLog('d3-farmer')">+ Log</button><span class="ex-note">15–20lb per hand — stand tall, walk controlled. Builds grip, core, and posture simultaneously.</span></span>
+        <span class="ex-sets">3 × 30–40 yd</span>
+      </div>
+      <div class="inline-log" id="log-d3-farmer">
+        <div class="log-col-headers"><div class="log-col-header"></div><div class="log-col-header">Weight</div><div class="log-col-header">Reps</div><div class="log-col-header">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">1</div><input type="number" class="log-set-input" placeholder="lbs" id="d3-farmer-w1"><input type="number" class="log-set-input" placeholder="reps" id="d3-farmer-r1"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">2</div><input type="number" class="log-set-input" placeholder="lbs" id="d3-farmer-w2"><input type="number" class="log-set-input" placeholder="reps" id="d3-farmer-r2"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">3</div><input type="number" class="log-set-input" placeholder="lbs" id="d3-farmer-w3"><input type="number" class="log-set-input" placeholder="reps" id="d3-farmer-r3"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+      </div>
+
+      <div class="ex-row">
+        <span class="ex-name">Dead Bug <button class="log-toggle" onclick="toggleLog('d3-deadbug')">+ Log</button><span class="ex-note">On back — extend opposite arm/leg to 3/4 range. Lower back stays flat. Slow and intentional.</span></span>
+        <span class="ex-sets">3 × 8 ea</span>
+      </div>
+      <div class="inline-log" id="log-d3-deadbug">
+        <div class="log-col-headers"><div class="log-col-header"></div><div class="log-col-header">Weight</div><div class="log-col-header">Reps</div><div class="log-col-header">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">1</div><input type="number" class="log-set-input" placeholder="lbs" id="d3-deadbug-w1"><input type="number" class="log-set-input" placeholder="reps" id="d3-deadbug-r1"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">2</div><input type="number" class="log-set-input" placeholder="lbs" id="d3-deadbug-w2"><input type="number" class="log-set-input" placeholder="reps" id="d3-deadbug-r2"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+        <div class="log-set-row"><div class="log-set-num">3</div><input type="number" class="log-set-input" placeholder="lbs" id="d3-deadbug-w3"><input type="number" class="log-set-input" placeholder="reps" id="d3-deadbug-r3"><div class="log-set-check" onclick="toggleCheck(this)">✓</div></div>
+      </div>
+    </div>
+  </div>
+  <button class="submit-btn" onclick="submitDay('friday')" id="submit-friday">Submit Day 3 Workout</button>
+
+  <div class="card" style="margin-top:1.5rem;">
+    <div class="card-title">EDS + POTS Progression Rules</div>
+    <div class="ex-row"><span class="ex-name">First 2 weeks</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Form only. Learn the movements. No pushing weight.</span></div>
+    <div class="ex-row"><span class="ex-name">Weeks 3–4</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Add 1–2 reps if movement feels controlled and painless.</span></div>
+    <div class="ex-row"><span class="ex-name">Weeks 5+</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Bump weight by smallest increment only when form is perfect for 2 sessions.</span></div>
+    <div class="ex-row"><span class="ex-name">POTS reminder</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Rise slowly after floor exercises. Sit for 30 sec before standing.</span></div>
+    <div class="ex-row" style="border:none;"><span class="ex-name">Always</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Joint pain = stop. Muscle burn = keep going.</span></div>
+  </div>
+
+  <div class="toast" id="amyToast">Workout Logged! 💪</div>
+</div>
+
+<!-- CARDIO -->
+<div id="cardio" class="section">
+  <div class="section-header">
+    <h2>Cardio Options</h2>
+    <p>Before or after lifting · Low-impact · 15–20 min · EDS + POTS friendly</p>
+  </div>
+
+  <div class="encourage">
+    Cardio is optional but encouraged. 15–20 minutes before or after lifting. Keep heart rate moderate — you should be able to hold a conversation. No running, no elliptical. POTS note: start slowly and increase pace gradually. If dizzy, slow down immediately.
+  </div>
+
+  <div class="card">
+    <div class="card-title">Approved Cardio Options</div>
+    <div class="cardio-option">
+      <h4>🚶 Incline Treadmill Walk</h4>
+      <p>4–6% incline · 2.8–3.2 mph · 15–20 min. Burns more than flat walking without joint impact. Great POTS option — consistent rhythm helps blood flow regulation.</p>
+    </div>
+    <div class="cardio-option">
+      <h4>🚴 Stationary Bike</h4>
+      <p>Moderate resistance · 15–20 min. Seated = easier on joints and POTS. Planet Fitness has upright and recumbent bikes. Recumbent is the safest POTS option.</p>
+    </div>
+    <div class="cardio-option">
+      <h4>🪜 StairMaster</h4>
+      <p>Low speed · 10–15 min to start. Builds glutes and legs while elevating heart rate. Hold rails lightly for balance — don't lean on them. Build up slowly.</p>
+    </div>
+    <div class="cardio-option">
+      <h4>🚣 Rower</h4>
+      <p>Low resistance · 10–15 min. Full body, low impact. Focus on leg drive — 60% legs, 20% core, 20% arms. Don't hyperextend at finish position.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Cardio Timing</div>
+    <div class="ex-row"><span class="ex-name">Before lifting</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Good warm-up effect. Rest 3–5 min before starting weights.</span></div>
+    <div class="ex-row" style="border:none;"><span class="ex-name">After lifting</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Finisher style. Helps flush lactic acid. Keeps heart rate elevated.</span></div>
+  </div>
+</div>
+
+<!-- SCHEDULE -->
+<div id="schedule" class="section">
+  <div class="section-header">
+    <h2>Weekly Schedule</h2>
+    <p>3 days on · 4 days off · Garage gym or Planet Fitness</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Recommended Week</div>
+    <div class="week-row"><div class="week-day">Monday</div><div class="week-activity">Day 1 — Upper Body + optional cardio (Garage gym)</div></div>
+    <div class="week-row"><div class="week-day rest">Tuesday</div><div class="week-activity" style="color:var(--mid);">Rest or light walk</div></div>
+    <div class="week-row"><div class="week-day">Wednesday</div><div class="week-activity">Day 2 — Lower Body + optional cardio (Planet Fitness or Garage)</div></div>
+    <div class="week-row"><div class="week-day rest">Thursday</div><div class="week-activity" style="color:var(--mid);">Rest or light walk</div></div>
+    <div class="week-row"><div class="week-day">Friday</div><div class="week-activity">Day 3 — Full Body + optional cardio (Planet Fitness — convenient after work)</div></div>
+    <div class="week-row"><div class="week-day rest">Saturday</div><div class="week-activity" style="color:var(--mid);">Rest</div></div>
+    <div class="week-row"><div class="week-day rest">Sunday</div><div class="week-activity" style="color:var(--mid);">Rest</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Location Guide</div>
+    <div class="ex-row"><span class="ex-name">Garage Gym</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Best for DB work, bands, carries, treadmill</span></div>
+    <div class="ex-row" style="border:none;"><span class="ex-name">Planet Fitness</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Great for machines, cable rows, lat pulldown, leg press, cardio equipment</span></div>
+  </div>
+</div>
+
+<!-- NOTES -->
+<div id="notes" class="section">
+  <div class="section-header">
+    <h2>Notes & Guidelines</h2>
+    <p>EDS · POTS · GLP-1 · Training approach</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">EDS Guidelines</div>
+    <div class="ex-row"><span class="ex-name">Tempo</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">2 sec up · 1 sec pause · 3 sec down. Always.</span></div>
+    <div class="ex-row"><span class="ex-name">Range</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Stop 1–2 reps before end range on every exercise.</span></div>
+    <div class="ex-row"><span class="ex-name">Load</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Light to moderate. Form is the priority for months 1–2.</span></div>
+    <div class="ex-row"><span class="ex-name">No stretching</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Already hypermobile — aggressive stretching increases instability.</span></div>
+    <div class="ex-row" style="border:none;"><span class="ex-name">Pain rule</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Muscle burn = good. Joint pain = stop immediately.</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">POTS Guidelines</div>
+    <div class="ex-row"><span class="ex-name">Hydrate</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Drink water before and during every session.</span></div>
+    <div class="ex-row"><span class="ex-name">Rise slowly</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">After floor exercises, sit up slowly. Wait 30 sec before standing.</span></div>
+    <div class="ex-row"><span class="ex-name">Dizzy = stop</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Sit or lie down immediately. Don't push through lightheadedness.</span></div>
+    <div class="ex-row" style="border:none;"><span class="ex-name">Cardio start</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Always begin cardio at lowest setting and ramp up slowly.</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">GLP-1 Notes</div>
+    <div class="ex-row"><span class="ex-name">Protein priority</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">GLP-1 reduces appetite — make sure protein stays high to protect muscle.</span></div>
+    <div class="ex-row"><span class="ex-name">Pre-workout</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Eat something light 60–90 min before training even if not hungry.</span></div>
+    <div class="ex-row" style="border:none;"><span class="ex-name">Muscle goal</span><span class="ex-sets" style="color:var(--mid); font-size:0.82rem;">Lifting while on GLP-1 preserves lean mass during weight loss. This is the right move.</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Goal — What Success Looks Like</div>
+    <div style="font-size:0.88rem; color:#ccc; line-height:1.7;">
+      After 8 weeks of consistent training, Amy should feel stronger, move with more confidence, and see visible muscle definition in her arms, shoulders, back, and legs. Weight on the scale matters less than how clothes fit and how strong she feels. The program is built to complement the GLP-1 — not fight it.
+    </div>
+  </div>
+</div>
+
+<script>
+  function showTab(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+  }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const { createClient: amyCreate } = supabase;
+  const amyDb = amyCreate('https://thfkvablbyrqdndoaiqo.supabase.co', 'sb_publishable_oliFMYDCKU98JHD7CxqFxg_YtjNqG03');
+
+  const dayPrefixes = { monday: 'd1-', wednesday: 'd2-', friday: 'd3-' };
+
+  function toggleLog(id) {
+    const el = document.getElementById('log-' + id);
+    if (el) el.classList.toggle('open');
+  }
+  function toggleCheck(el) { el.classList.toggle('done'); }
+
+  async function submitDay(dayId) {
+    const btn = document.getElementById('submit-' + dayId);
+    btn.disabled = true; btn.textContent = 'Saving...';
+    const today = new Date().toISOString().split('T')[0];
+    const prefix = dayPrefixes[dayId];
+    const logs = [];
+
+    document.querySelectorAll('.inline-log.open').forEach(logDiv => {
+      const exId = logDiv.id.replace('log-', '');
+      if (!exId.startsWith(prefix)) return;
+      const nameEl = logDiv.previousElementSibling?.querySelector('.ex-name');
+      let exName = exId;
+      if (nameEl) {
+        const textNodes = Array.from(nameEl.childNodes).filter(n => n.nodeType === 3);
+        exName = textNodes.map(n => n.textContent.trim()).join(' ').trim() || exId;
+      }
+      for (let i = 1; i <= 5; i++) {
+        const wEl = document.getElementById(exId + '-w' + i);
+        const rEl = document.getElementById(exId + '-r' + i);
+        if (!wEl || !rEl) break;
+        const weight = parseFloat(wEl.value) || 0;
+        const reps = parseInt(rEl.value) || 0;
+        if (reps > 0 || weight > 0) logs.push({ member: 'Amy', exercise: exName, sets: i, reps, weight, logged_date: today });
+      }
+    });
+
+    if (logs.length === 0) {
+      btn.disabled = false;
+      btn.textContent = '⚠ Tap + Log and enter sets first';
+      btn.style.background = '#5a1a5a';
+      setTimeout(() => { btn.textContent = 'Submit Day ' + (dayId === 'monday' ? '1' : dayId === 'wednesday' ? '2' : '3') + ' Workout'; btn.style.background = 'var(--amy-dim)'; }, 2500);
+      return;
+    }
+
+    const { error } = await amyDb.from('workout_logs').insert(logs);
+    if (error) {
+      btn.disabled = false; btn.textContent = 'Error — try again';
+      setTimeout(() => { btn.textContent = 'Submit Workout'; btn.style.background = 'var(--amy-dim)'; }, 3000);
+      return;
+    }
+
+    const toast = document.getElementById('amyToast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+    btn.disabled = false;
+    btn.textContent = '✓ Day ' + (dayId === 'monday' ? '1' : dayId === 'wednesday' ? '2' : '3') + ' Logged!';
+    btn.style.background = '#27ae60';
+  }
+
+  // SPLASH
+  const SAYINGS = [
+    { word: "GRIND", type: "verb", def: "To perform repetitive tasks over and over in order to attain a goal" },
+    { word: "DISCIPLINE", type: "noun", def: "Doing what needs to be done, even when you don't feel like it" },
+    { word: "EXECUTE", type: "verb", def: "To put a plan in motion and make things happen today" },
+    { word: "SACRIFICE", type: "noun", def: "Comes before success, even in the dictionary" },
+    { word: "GRIT", type: "noun", def: "Strength of character, perseverance and passion for long-term goals" },
+    { word: "STANDARD", type: "noun", def: "The level you hold yourself to when no one is watching" },
+    { word: "EARNED", type: "adjective", def: "Nothing given. Nothing borrowed. Everything built." },
+    { word: "COMPETE", type: "verb", def: "To show up every day and refuse to be outworked" },
+    { word: "LEGACY", type: "noun", def: "What remains when the work is done and the season is over" },
+    { word: "CONQUER", type: "verb", def: "To forcefully overcome and take control of all weaknesses and excuses" },
+    { word: "COMMIT", type: "verb", def: "To dedicate fully, with no exit and no excuse" },
+    { word: "SHOW UP", type: "verb", def: "The most important thing you will do today" }
+  ];
+
+  const splash = document.getElementById('splash');
+  const lastShown = localStorage.getItem('splashLastShown');
+  const now = Date.now();
+  const IDLE_WINDOW = 30 * 60 * 1000;
+
+  if (lastShown && (now - parseInt(lastShown)) < IDLE_WINDOW) {
+    splash.classList.add('hidden');
+  } else {
+    localStorage.setItem('splashLastShown', now.toString());
+    const s = SAYINGS[Math.floor(Math.random() * SAYINGS.length)];
+    document.getElementById('splashWord').textContent = s.word;
+    document.getElementById('splashType').textContent = s.type;
+    document.getElementById('splashDef').textContent = s.def;
+    setTimeout(() => {
+      splash.classList.add('fade-out');
+      setTimeout(() => splash.classList.add('hidden'), 600);
+    }, 6500);
+  }
+  document.addEventListener('click', () => localStorage.setItem('splashLastShown', Date.now().toString()));
+</script>
+</body>
+</html>
